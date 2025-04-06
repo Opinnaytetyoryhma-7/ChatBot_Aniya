@@ -1,0 +1,109 @@
+{
+    "intents": [
+      {
+        "tag": "greeting",
+        "patterns": [
+          "Hei",
+          "Moi",
+          "Mitä kuuluu",
+          "Onko siellä ketään",
+          "Heippa",
+          "Päivää",
+          "Moikka"
+        ],
+        "responses": [
+          "Hei :)",
+          "Moikka",
+          "Hei vain. Voisinko auttaa jotenkin?",
+          "Hei!"
+        ]
+      },
+      {
+        "tag": "goodbye",
+        "patterns": [
+          "Heippa",
+          "Moikka",
+          "Nähdään",
+          "Hyvästi",
+          "Hei hei"
+          ],
+        "responses": [
+          "Heippa! Kiva kun kävit sivuillamme!",
+          "Mukavaa päivänjatkoa! :)",
+          "Hei hei! Tervetuloa takaisin!"
+        ]
+      },
+      {
+        "tag": "thanks",
+        "patterns": [
+          "Kiitos", 
+          "Kiitos paljon",
+          "Tämä ratkaisi ongelmani", 
+          "Tästä oli apua"],
+        "responses": [
+          "Ilo olla avuksi! Oliko muuta missä voin auttaa?"
+           ]
+      },
+      {
+        "tag": "items",
+        "patterns": [
+          "Mitä tuotteita teillä on myynnissä?",
+          "Mitä myytte",
+          "Mitä minun kannattaisi ostaa"
+        ],
+        "responses": [
+          "Myymme tietokonetarvikkeita. Käy rohkeasti selaamassa tuotevalikoimaamme!"
+        ]
+      },
+      {
+        "tag": "payments_option",
+        "patterns": [
+          "Do you take credit cards?",
+          "Do you accept Mastercard?",
+          "Can I pay with Paypal?",
+          "Are you cash only?"
+        ],
+        "responses": [
+          "We accept VISA, Mastercard and Paypal",
+          "We accept most major credit cards, and Paypal"
+        ]
+      },
+      {
+        "tag": "delivery_time",
+        "patterns": [
+          "Kauanko toimituksessa suunnilleen meneee?",
+          "Miten kauan toimituksessa kestää?",
+          "Milloin saan tuotteeni?",
+          "Kauan toimituksessa kestää?"
+        ],
+        "responses": [
+          "Toimituksessa kestää suunnilleen 4-10 päivää"
+        ]
+      },
+      {
+        "tag": "product_problem",
+        "patterns": [
+          "Ostamassani tuotteessa on ongelma",
+          "Tuote on viallinen",
+          "Tietokoneeni ei toimi",
+          "Koneessani on jotain vikaa",
+          "Ostamani tuote on rikki"
+        ],
+        "responses": [
+          "Ikävä kuulla. Voisitko kuvailla ongelmaa?",
+          "Todella harmillista. Kuvailistko ongelmaa?"
+        ]
+      },
+      {
+        "tag": "ticket_asking",
+        "patterns": [
+          "Haluaisin puhua ihmisen kanssa",
+          "Saisinko jättää tukipyynnön",
+          "Miten voin ottaa yhteyttä asiakaspalveluun?"
+        ],
+        "responses" : [
+          "Tässä on linkki, minkä kautta voit jättää yhteydenottopyynnön: gjnhbhj"
+        ]
+      }
+    ]
+  }

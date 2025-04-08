@@ -72,7 +72,7 @@ hidden_size = 8
 output_size = len(tags)
 input_size = len(X_train [0])
 learning_rate = 0.001
-num_epochs = 1000
+num_epochs = 1200
 
 #Uses DataLoader to shuffle & load data in batches for training
 #Moves the model to GPU if available for faster training

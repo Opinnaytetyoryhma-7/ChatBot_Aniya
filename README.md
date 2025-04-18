@@ -9,9 +9,9 @@ training.py pitää ajaa, jotta Aniya saadaan koulutettua.
 chat.py ajamalla saadaan Aniyan kanssa keskustelu terminaaliin.
 
 
-pip install fastapi supabase python-decouple uvicorn
+pip install fastapi supabase python-decouple uvicorn pydantic[email]
 
-suorita projektin juuressa seuraava komento :
+suorita projektin juuressa seuraava komento:
 uvicorn backend.main:app --reload
 
 Sovellusta voi testata osoitteessa

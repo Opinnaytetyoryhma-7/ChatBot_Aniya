@@ -1,12 +1,37 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 from chat import get_response, intents
-from backend.database import save_unknown_message, create_ticket
+from backend.database import (
+    save_unknown_message,
+    create_ticket,
+    create_user,
+    get_user_by_email,
+)
+from fastapi.middleware.cors import CORSMiddleware
 import random
+from backend.auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    get_current_user,
+)
 
 app = FastAPI()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# TODO: cors
+# cors
+origins = [
+    "http://localhost:3000",  # React-frontend, muuta tarvittaessa
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # sallii vain määritellyt osoitteet
+    allow_credentials=True,  # esim. JWT-tokenit
+    allow_methods=["*"],  # sallii kaikki HTTP-metodit
+    allow_headers=["*"],  # sallii kaikki headerit
+)
 
 
 # Määritellään ChatInput-malli, joka määrittelee POST-pyynnössä vastaanotetun datan rakenteen
@@ -18,6 +43,23 @@ class ChatInput(BaseModel):
 class TicketInput(BaseModel):
     issue_description: str  # ongelman kuvaus
     email: EmailStr  # käytetään pydanticin EmailStr-tyyppiä sähköpostiosoitteen kelpoisuuden tarkistamiseen
+
+
+class RegisterInput(BaseModel):
+    email: EmailStr
+    password: str
+    fname: str
+    lname: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class UserOut(BaseModel):  # vältetäään palauttamasta salasanaa frontendille
+    id: str
+    email: EmailStr
 
 
 # Luodaan post-pyyntö, joka vastaanottaa käyttäjän viestin
@@ -61,7 +103,7 @@ async def chat(input: ChatInput):
             return {
                 "response": "Kiitos! Lisää vielä sähköpostiosoitteesi, niin voimme ottaa sinuun yhteyttä",
                 "conversation_state": "wait_email",
-                "issue_description": input.message, # tallennetaan esim. React useStateen, lähetetään /ticket-pyynnössä
+                "issue_description": input.message,  # tallennetaan esim. React useStateen, lähetetään /ticket-pyynnössä
             }
 
         case _:
@@ -69,6 +111,7 @@ async def chat(input: ChatInput):
                 "response": "Jokin meni pieleen. Yritetäänpä uudelleen.",
                 "conversation_state": None,
             }
+
 
 # Kun sekä ongelman kuvaus että sähköpostiosoite on saatu, muodostetaan uusi post-pyyntö
 @app.post("/ticket")
@@ -78,3 +121,44 @@ async def ticket(input: TicketInput):
     return {
         "response": "Kiitos! Olemme tallentaneet tietosi. Palaamme asiaan heti kun pystymme!"
     }
+
+
+@app.post("/register", response_model=UserOut)
+async def register_user(user: RegisterInput):
+    # Tarkistetaan, onko käyttäjä jo olemassa
+    existing_user = get_user_by_email(user.email)
+    if existing_user.data:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Käyttäjä on jo olemassa")
+
+    hashed_pw = hash_password(user.password)
+    new_user = (
+        create_user(
+            fname=user.fname,
+            lname=user.lname,
+            email=user.email,
+            password=hashed_pw,
+        )
+        .execute()
+        .data[0]
+    )
+
+    return {"id": new_user["user_id"], "email": new_user["email"]}
+
+
+@app.post("/token", response_model=Token)
+async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+    res = get_user_by_email(form_data.username)
+    if not res.data:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Käyttäjätunnus tai salasana virheellinen")
+    user = res.data[0]
+    if not verify_password(form_data.password, user["password"]):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Käyttäjätunnus tai salasana virheellinen")
+
+    token = create_access_token({"sub": str(user["user_id"])})
+
+    return Token(access_token=token, token_type="bearer")
+
+
+@app.get("/users/me", response_model=UserOut) # palauttaa kirjautuneen käyttäjän tiedot
+async def read_users_me(current_user=Depends(get_current_user)):
+    return {"id": current_user["user_id"], "email": current_user["email"]}

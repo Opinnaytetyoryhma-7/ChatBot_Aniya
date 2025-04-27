@@ -7,6 +7,7 @@ from backend.database import (
     create_ticket,
     create_user,
     get_user_by_email,
+    get_products,
 )
 from fastapi.middleware.cors import CORSMiddleware
 import random
@@ -125,10 +126,11 @@ async def ticket(input: TicketInput):
 
 @app.post("/register", response_model=UserOut)
 async def register_user(user: RegisterInput):
-    # Tarkistetaan, onko käyttäjä jo olemassa
     existing_user = get_user_by_email(user.email)
     if existing_user.data:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Käyttäjä on jo olemassa")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Käyttäjä on jo olemassa"
+        )
 
     hashed_pw = hash_password(user.password)
     new_user = (
@@ -149,16 +151,30 @@ async def register_user(user: RegisterInput):
 async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     res = get_user_by_email(form_data.username)
     if not res.data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Käyttäjätunnus tai salasana virheellinen")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Käyttäjätunnus tai salasana virheellinen",
+        )
     user = res.data[0]
     if not verify_password(form_data.password, user["password"]):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Käyttäjätunnus tai salasana virheellinen")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Käyttäjätunnus tai salasana virheellinen",
+        )
 
     token = create_access_token({"sub": str(user["user_id"])})
 
-    return Token(access_token=token, token_type="bearer")
+    return Token(
+        access_token=token, token_type="bearer"
+    )  # frontendille lähetettävä token
 
 
-@app.get("/users/me", response_model=UserOut) # palauttaa kirjautuneen käyttäjän tiedot
+@app.get("/users/me", response_model=UserOut)  # palauttaa kirjautuneen käyttäjän tiedot
 async def read_users_me(current_user=Depends(get_current_user)):
     return {"id": current_user["user_id"], "email": current_user["email"]}
+
+
+@app.get("/products")
+async def get_products_list():
+    products = get_products()
+    return products.data

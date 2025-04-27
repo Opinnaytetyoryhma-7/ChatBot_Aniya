@@ -31,3 +31,6 @@ def get_user_by_email(email: str):
 
 def get_user_by_id(user_id: str):
     return supabase.table("User").select("*").eq("user_id", user_id).execute()
+
+def get_products():
+    return supabase.table("Product").select("*").execute()

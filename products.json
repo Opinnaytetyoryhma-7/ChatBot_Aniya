@@ -1,0 +1,109 @@
+{
+  "products": [
+        {
+        "name": "Computer",
+        "category": "Computer",
+        "price": 1000
+        },
+        {
+        "name": "Laptop",
+        "category": ["Computer", "Laptop"],
+        "price": 800
+        },
+        {
+        "name": "Keyboard",
+        "category": "Keyboard",
+        "price": 200
+        },
+        {
+        "name": "Mouse",
+        "category": "Mouse",
+        "price": 100
+        },
+        {
+        "name": "RAM",
+        "category": "RAM",
+        "price": 136
+        },
+        {
+        "name": "Ethernet Cable",
+        "category": "cable",
+        "price": 5
+        },
+        {
+        "name": "Entrial 4060",
+        "category": "Computer",
+        "price": 990
+        },
+        {
+        "name": "MacBook Air 13 M4 16/256 GB",
+        "category": ["Computer", "Laptop"],
+        "price": 1259
+        },
+        {
+        "name": "Logitech G915 TKL",
+        "category": "Keyboard",
+        "price": 205
+        },
+        {
+        "name": "GAMIAC PX71",
+        "category": "Mouse",
+        "price": 49
+        },
+        {
+        "name": "Kingston 32GB (2 x 16GB) Fury Beast DDR5",
+        "category": "RAM",
+        "price": 119
+        },
+        {
+        "name": "Archer 9070 XT",
+        "category": "Computer",
+        "price": 2299
+        },
+        {
+        "name": "Acer Aspire 3 R5-5500U/8/512",
+        "category": ["Computer", "Laptop"],
+        "price": 379
+        },
+        {
+        "name": "Deltaco Gaming GAM-075B",
+        "category": "Keyboard",
+        "price": 35
+        },
+        {
+        "name": "Logitech G PRO X SUPERLIGHT 2",
+        "category": "Mouse",
+        "price": 169
+        },
+        {
+        "name": "G.Skill 32GB (2 x 16GB) Trident Z5 Neo RGB",
+        "category": "RAM",
+        "price": 160
+        },
+        {
+        "name": "Mach 6",
+        "category": "Computer",
+        "price": 3589
+        },
+        {
+        "name": "Lenovo Yoga Slim 7 Ultra 5-125H/16/512",
+        "category": ["Computer", "Laptop"],
+        "price": 777
+        },
+        {
+        "name": "Asus ROG Claymore II",
+        "category": "Keyboard",
+        "price": 150
+        },
+        {
+        "name": "Endgame Gear OP1",
+        "category": "Mouse",
+        "price": 84
+        },
+        {
+        "name": "Corsair 32GB (2 x 16GB) Vengeance RGB",
+        "category": "RAM",
+        "price": 150
+        }
+    ]
+}

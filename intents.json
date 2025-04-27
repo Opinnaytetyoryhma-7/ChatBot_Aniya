@@ -1,0 +1,138 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "Hei",
+        "Moi",
+        "Mitä kuuluu",
+        "Onko siellä ketään",
+        "Heippa",
+        "Päivää",
+        "Moikka",
+        "Miten menee?",
+        "Terve",
+        "Tervehdys",
+        "Hei miten menee?"
+      ],
+      "responses": [
+        "Hei :)",
+        "Moikka",
+        "Hei vain. Voisinko auttaa jotenkin?",
+        "Hei!"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Nähdään",
+        "Hyvästi"
+        ],
+      "responses": [
+        "Heippa! Kiva kun kävit sivuillamme!",
+        "Mukavaa päivänjatkoa! :)",
+        "Hei hei! Tervetuloa takaisin!"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Kiitos", 
+        "Kiitos paljon",
+        "Tämä ratkaisi ongelmani", 
+        "Tästä oli apua"],
+      "responses": [
+        "Ilo olla avuksi! Oliko muuta missä voin auttaa?"
+         ]
+    },
+    {
+      "tag": "items",
+      "patterns": [
+        "Mitä tuotteita teillä on myynnissä?",
+        "Mitä myytte",
+        "Mitä minun kannattaisi ostaa"
+      ],
+      "responses": [
+        "Myymme tietokonetarvikkeita. Käy rohkeasti selaamassa tuotevalikoimaamme!"
+      ]
+    },
+    {
+      "tag": "delivery_time",
+      "patterns": [
+        "Kauanko toimituksessa suunnilleen meneee?",
+        "Miten kauan toimituksessa kestää?",
+        "Milloin saan tuotteeni?",
+        "Kauan toimituksessa kestää?"
+      ],
+      "responses": [
+        "Toimituksessa kestää suunnilleen 4-10 päivää"
+      ]
+    },
+    {
+      "tag": "product_problem",
+      "patterns": [
+        "Ostamassani tuotteessa on ongelma",
+        "Tuote on viallinen",
+        "Tietokoneeni ei toimi",
+        "Koneessani on jotain vikaa",
+        "Ostamani tuote on rikki"
+      ],
+      "responses": [
+        "Ikävä kuulla. Voisitko kuvailla ongelmaa?",
+        "Todella harmillista. Kuvailisitko ongelmaa?"
+      ]
+    },
+    {
+      "tag": "problem",
+      "patterns": [
+        "Osaatko auttaa?",
+        "Tarvitsisin apua",
+        "En ymmärrä erästä juttua",
+        "Miten tämä toimii",
+        "Tarvin apua",
+        "apua"
+      ],
+      "responses": [
+        "Kuvailisitko ongelmaa, vai haluatko jättää tukipyynnön?"
+      ]
+    },
+    {
+      "tag": "ticket_asking",
+      "patterns": [
+        "Tukipyyntö",
+        "Tukipyynnön",
+        "Haluaisin puhua ihmisen kanssa",
+        "Saisinko jättää tukipyynnön",
+        "Miten voin ottaa yhteyttä asiakaspalveluun?"
+      ],
+      "responses" : [
+        "Tässä on linkki, minkä kautta voit jättää yhteydenottopyynnön: gjnhbhj"
+      ]
+    },
+    {
+      "tag": "recommend_product",
+      "patterns": [
+        "Tarvitsen uuden tietokoneen",
+        "Mikä RAM olisi hyvä ja halpa?",
+        "Etsin hyvää hiirtä edullisesti",
+        "Tarvitsen lisää muistia budjetilla",
+        "Mikä olis paras tietokone?"
+      ],
+      "responses": [
+        "Katsotaanpa sopivia tuotteita sinulle!"
+      ]
+    },
+    {
+      "tag": "recommend",
+      "patterns": [
+        "Suosittele minulle laitetta",
+        "Suosittelisitko tuotetta",
+        "Osaisitko kertoa mikä olisi hyvä laite?",
+        "Voisitko suositella tuotetta"
+      ],
+      "responses": [
+        "Voisitko kuvailla millaista laitetta tarvitsisit?"
+      ]
+    }
+  ]
+}

@@ -26,9 +26,7 @@
       "tag": "goodbye",
       "patterns": [
         "Nähdään",
-        "Hyvästi",
-        "Et",
-        "Ei"
+        "Hyvästi"
         ],
       "responses": [
         "Heippa! Kiva kun kävit sivuillamme!",
@@ -39,9 +37,9 @@
     {
       "tag": "thanks",
       "patterns": [
-        "Kiitos", 
+        "Kiitos",
         "Kiitos paljon",
-        "Tämä ratkaisi ongelmani", 
+        "Tämä ratkaisi ongelmani",
         "Tästä oli apua"],
       "responses": [
         "Ilo olla avuksi! Oliko muuta missä voin auttaa?"
@@ -109,6 +107,31 @@
       ],
       "responses" : [
         "Tässä on linkki, minkä kautta voit jättää yhteydenottopyynnön: gjnhbhj"
+      ]
+    },
+    {
+      "tag": "recommend_product",
+      "patterns": [
+        "Tarvitsen uuden tietokoneen",
+        "Mikä RAM olisi hyvä ja halpa?",
+        "Etsin hyvää hiirtä edullisesti",
+        "Tarvitsen lisää muistia budjetilla",
+        "Mikä olis paras tietokone?"
+      ],
+      "responses": [
+        "Katsotaanpa sopivia tuotteita sinulle!"
+      ]
+    },
+    {
+      "tag": "recommend",
+      "patterns": [
+        "Suosittele minulle laitetta",
+        "Suosittelisitko tuotetta",
+        "Osaisitko kertoa mikä olisi hyvä laite?",
+        "Voisitko suositella tuotetta"
+      ],
+      "responses": [
+        "Voisitko kuvailla millaista laitetta tarvitsisit?"
       ]
     }
   ]

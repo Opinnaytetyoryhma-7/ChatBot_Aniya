@@ -21,6 +21,36 @@ timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 with open('intents.json', 'r', encoding='utf-8') as f:
     intents = json.load(f)
 
+#Loads products.json for matching product with keyword
+def recommend_product(user_input):
+    with open('products.json', 'r', encoding='utf-8') as f:
+        products_data = json.load(f)
+        products = products_data["products"]
+
+    recommended = products
+
+    # Priority filters
+    if "muisti" in user_input.lower():
+        recommended = [p for p in recommended if "RAM" in p["category"]]
+
+    if "tietokone" in user_input.lower() or "kone" in user_input.lower():
+        recommended = [p for p in recommended if "Computer" in p["category"]]
+
+    if "läppäri" in user_input.lower() or "kannettava" in user_input.lower():
+        recommended = [p for p in recommended if "Laptop" in p["category"]]
+
+    if "näppäimistö" in user_input.lower():
+        recommended = [p for p in recommended if "Keyboard" in p["category"]]
+
+    if "hiir" in user_input.lower():
+        recommended = [p for p in recommended if "Mouse" in p["category"]]
+
+    if "budjetti" in user_input.lower() or "edullinen" in user_input.lower() or "halpa" in user_input.lower():
+        recommended = sorted(recommended, key=lambda x: x["price"])
+
+    # Return top 3 best matches
+    return recommended[:3]
+
 
 def load_model():
     #Loads the trained model from data.pth
@@ -88,10 +118,24 @@ def chat_loop():
     #Exits when the user types quit
     print("Hei! Miten voin olla avuksi? :) Jos haluat lopettaa keskustelun, kirjoita stop.")
 
+    waiting_for_recom_desc = False
+
     while True:
         raw_sentence = input('Sinä: ')
         if raw_sentence == "stop":
             break
+
+        # Special case: If we are waiting for the description after asking "millaista laitetta"
+        if waiting_for_recom_desc:
+            recoms = recommend_product(raw_sentence)
+            if recoms:
+                print(f"{bot_name}: Tässä muutama vaihtoehto sinulle:")
+                for product in recoms:
+                    print(f"- {product['name']} ({product['price']}€)")
+            else:
+                print(f"{bot_name}: Valitettavasti en löytänyt sopivaa tuotetta kuvauksen perusteella.")
+            waiting_for_recom_desc = False  # reset
+            continue
 
         tag, prob = get_response(raw_sentence)
 
@@ -100,7 +144,21 @@ def chat_loop():
         if prob > 0.75:
             for intent in intents["intents"]:
                 if tag == intent["tag"]:
-                    print(f"{bot_name}: {random.choice(intent['responses'])}")
+                    if tag == "recommend_product":
+                        recoms = recommend_product(raw_sentence)
+                        print(f"{bot_name}: Tässä parhaat ehdotukset:")
+                        for product in recoms:
+                            print(f"- {product['name']} ({product['price']}€)")
+                        else:
+                                print(f"{bot_name}: En löytänyt sopivaa tuotetta annetuilla hakuehdoilla.")
+
+                    elif tag == "recommend":
+                        print(f"{bot_name}: {random.choice(intent['responses'])}")
+                        waiting_for_recom_desc = True
+
+                    else:
+                        print(f"{bot_name}: {random.choice(intent['responses'])}")
+
                     if tag == "goodbye":
                         return
                     elif tag == "problem":
@@ -120,6 +178,6 @@ def chat_loop():
             else:
                 print(f"{bot_name}: Selvä juttu! Hyvää päivänjatkoa!")
             return
-        
+
 if __name__ == "__main__":
     chat_loop()

@@ -5,3 +5,5 @@ USER: heippa | INTENT: unknown
 [2025-04-27 20:21:16] USER: voisitko suositella tietokonetta | INTENT: unknown
 [2025-04-27 20:22:48] USER: en | INTENT: unknown
 [2025-04-27 20:24:10] USER: entäs halpaa konetta | INTENT: unknown
+[2025-05-04 17:29:58] USER: suosittele tuotte | INTENT: unknown
+[2025-05-04 17:30:21] USER: entä halpa kaapeli | INTENT: unknown

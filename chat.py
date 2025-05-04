@@ -9,6 +9,16 @@ import torch
 from model import NeuralNet
 from nltk_utils import bag_of_words, tokenize
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "backend", ".env"))
+
+from supabase import create_client, Client
+
+url = os.getenv("SUPABASE_URL")
+key = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(url, key)
 
 #Defined the chatbot's name
 #Enables timestamp
@@ -23,30 +33,34 @@ with open('intents.json', 'r', encoding='utf-8') as f:
 
 #Loads products.json for matching product with keyword
 def recommend_product(user_input):
-    with open('products.json', 'r', encoding='utf-8') as f:
-        products_data = json.load(f)
-        products = products_data["products"]
+    response = supabase.table("Product").select("*").execute()
+    products = response.data
 
     recommended = products
 
-    # Priority filters
+    def match_category(p, category_key):
+        return category_key.lower() in p.get("category", "").lower()
+
     if "muisti" in user_input.lower():
-        recommended = [p for p in recommended if "RAM" in p["category"]]
+        recommended = [p for p in recommended if match_category(p, "RAM")]
 
     if "tietokone" in user_input.lower() or "kone" in user_input.lower():
-        recommended = [p for p in recommended if "Computer" in p["category"]]
+        recommended = [p for p in recommended if match_category(p, "Computer")]
 
     if "läppäri" in user_input.lower() or "kannettava" in user_input.lower():
-        recommended = [p for p in recommended if "Laptop" in p["category"]]
+        recommended = [p for p in recommended if match_category("Laptop")]
 
     if "näppäimistö" in user_input.lower():
-        recommended = [p for p in recommended if "Keyboard" in p["category"]]
+        recommended = [p for p in recommended if match_category("Keyboard")]
 
     if "hiir" in user_input.lower():
-        recommended = [p for p in recommended if "Mouse" in p["category"]]
+        recommended = [p for p in recommended if match_category("Mouse")]
 
-    if "budjetti" in user_input.lower() or "edullinen" in user_input.lower() or "halpa" in user_input.lower():
-        recommended = sorted(recommended, key=lambda x: x["price"])
+    if "kaapel" in user_input.lower() or "piuha" in user_input.lower() or "johto" in user_input.lower():
+        recommended = [p for p in recommended if match_category(p, "Cable")]
+
+    if "budjet" in user_input.lower() or "edullinen" in user_input.lower() or "halpa" in user_input.lower():
+        recommended = sorted(recommended, key=lambda x: x.get("price", 99999))
 
     # Return top 3 best matches
     return recommended[:3]

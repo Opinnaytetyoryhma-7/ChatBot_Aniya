@@ -31,19 +31,19 @@ def recommend_product(user_input):
 
     # Priority filters
     if "muisti" in user_input.lower():
-        recommended = [p for p in recommended if "RAM" in p["Category"]]
+        recommended = [p for p in recommended if "RAM" in p["category"]]
 
     if "tietokone" in user_input.lower() or "kone" in user_input.lower():
-        recommended = [p for p in recommended if "Computer" in p["Category"]]
+        recommended = [p for p in recommended if "Computer" in p["category"]]
 
     if "läppäri" in user_input.lower() or "kannettava" in user_input.lower():
-        recommended = [p for p in recommended if "Laptop" in p["Category"]]
+        recommended = [p for p in recommended if "Laptop" in p["category"]]
 
     if "näppäimistö" in user_input.lower():
-        recommended = [p for p in recommended if "Keyboard" in p["Category"]]
+        recommended = [p for p in recommended if "Keyboard" in p["category"]]
 
     if "hiir" in user_input.lower():
-        recommended = [p for p in recommended if "Mouse" in p["Category"]]
+        recommended = [p for p in recommended if "Mouse" in p["category"]]
 
     if "budjetti" in user_input.lower() or "edullinen" in user_input.lower() or "halpa" in user_input.lower():
         recommended = sorted(recommended, key=lambda x: x["price"])

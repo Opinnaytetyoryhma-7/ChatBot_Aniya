@@ -47,3 +47,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     user = user_res.data[0]
     return user
+
+def require_admin_user(current_user: dict = Depends(get_current_user)):
+    if current_user.get("admin") != True:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Ei oikeuksia",
+        )
+    return current_user

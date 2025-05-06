@@ -1,13 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Query
+from typing import Optional, List
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
-from chat import get_response, intents
+from chat import get_response, intents, recommend_product
 from backend.database import (
     save_unknown_message,
     create_ticket,
     create_user,
     get_user_by_email,
     get_products,
+    get_tickets,
 )
 from fastapi.middleware.cors import CORSMiddleware
 import random
@@ -16,6 +18,7 @@ from backend.auth import (
     verify_password,
     create_access_token,
     get_current_user,
+    require_admin_user,
 )
 
 app = FastAPI()
@@ -44,6 +47,16 @@ class ChatInput(BaseModel):
 class TicketInput(BaseModel):
     issue_description: str  # ongelman kuvaus
     email: EmailStr  # käytetään pydanticin EmailStr-tyyppiä sähköpostiosoitteen kelpoisuuden tarkistamiseen
+    user_id: Optional[str] = None  # käyttäjätunnus, oletuksena None
+
+
+class TicketOutput(BaseModel):
+    ticket_id: int
+    user_id: Optional[str]
+    issue_description: str
+    status: str
+    user_email: EmailStr
+    created_at: str
 
 
 class RegisterInput(BaseModel):
@@ -71,9 +84,34 @@ async def chat(input: ChatInput):
     if prob > 0.75:
         for intent in intents["intents"]:
             if tag == intent["tag"]:
+                if tag == "recommend_product":
+                    products = recommend_product(input.message)
+                    if products:
+                        response_text = "Tässä parhaat ehdotukset: \n" + "\n".join(
+                            f"- {product['name']} ({product['price']}€)"
+                            for product in products
+                        )
+                    else:
+                        response_text = (
+                            "En löytänyt sopivaa tuotetta annetuilla hakuehdoilla."
+                        )
+
+                    return {"response": response_text}
+
+                if tag == "recommend":
+                    return {
+                        "response": random.choice(intent["responses"]),
+                        "conversation_state": "wait_recommendation",
+                    }
+
+                if tag == "goodbye":
+                    return {
+                        "response": random.choice(intent["responses"]),
+                        "conversation_state": "end",
+                    }
                 response = random.choice(intent["responses"])
 
-                return {"response": response}
+                return { "response": response}
 
     # Jos botti ei tunnista viestiä, tallennetaan se Supabasen Message-tauluun
     save_unknown_message(input.message)
@@ -82,7 +120,7 @@ async def chat(input: ChatInput):
     msg = input.message.strip().lower()
 
     match state:
-        case None:
+        case None | "":
             return {
                 "response": "Pahoittelut, nyt en ymmärtänyt. Haluatko jättää tukipyynnön?",
                 "conversation_state": "ask_ticket",
@@ -105,6 +143,22 @@ async def chat(input: ChatInput):
                 "response": "Kiitos! Lisää vielä sähköpostiosoitteesi, niin voimme ottaa sinuun yhteyttä",
                 "conversation_state": "wait_email",
                 "issue_description": input.message,  # tallennetaan esim. React useStateen, lähetetään /ticket-pyynnössä
+            }
+
+        case "wait_recommendation":
+            products = recommend_product(input.message)
+            if products:
+                response_text = "Tässä muutama vaihtoehto sinulle: \n" + "\n".join(
+                    f"- {product['name']} ({product['price']}€)" for product in products
+                )
+            else:
+                response_text = (
+                    "Valitettavasti en löytänyt sopivaa tuotetta kuvauksen perusteella."
+                )
+
+            return {
+                "response": response_text,
+                "conversation_state": None,
             }
 
         case _:
@@ -178,3 +232,22 @@ async def read_users_me(current_user=Depends(get_current_user)):
 async def get_products_list():
     products = get_products()
     return products.data
+
+@app.get("/admin/tickets", response_model=List[TicketOutput])
+async def get_tickets_list(
+    status: Optional[str] = Query(None, description="Suodata tiketit statuksen mukaan"),
+    current_user: dict = Depends(require_admin_user),
+):
+    try:
+        tickets = get_tickets()
+        if status:
+            tickets = tickets.eq("status", status)
+
+        tickets = tickets.order("created_at", desc=True)
+
+        response = tickets.execute()
+
+        return response.data
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -23,6 +23,17 @@
       ]
     },
     {
+      "tag": "no",
+      "patterns": [
+        "ei",
+        "eikä",
+        "en"
+      ],
+      "responses": [
+        "Missä voisin auttaa?"
+      ]
+    },
+    {
       "tag": "goodbye",
       "patterns": [
         "Nähdään",
@@ -32,6 +43,17 @@
         "Heippa! Kiva kun kävit sivuillamme!",
         "Mukavaa päivänjatkoa! :)",
         "Hei hei! Tervetuloa takaisin!"
+      ]
+    },
+    {
+      "tag": "wondering",
+      "patterns": [
+        "Mitä sinulta voi kysyä?",
+        "Mitä sinä teet?",
+        "Mitä osaat tehdä?"
+        ],
+      "responses": [
+        "Voin yrittää auttaa sinua tietokoneeseesi tai oheislaitteisiisi liittyvien ongelmien kanssa, tai voit halutessasi jättää tukipyynnön."
       ]
     },
     {
@@ -50,10 +72,11 @@
       "patterns": [
         "Mitä tuotteita teillä on myynnissä?",
         "Mitä myytte",
-        "Mitä minun kannattaisi ostaa"
+        "Mitä minun kannattaisi ostaa",
+        "Millaisia tuotteita teillä on saatavilla?"
       ],
       "responses": [
-        "Myymme tietokonetarvikkeita. Käy rohkeasti selaamassa tuotevalikoimaamme!"
+        "Myymme tietokonetarvikkeita. Käy rohkeasti selaamassa tuotevalikoimaamme! Voin myös suositella tuotetta hinnan mukaan."
       ]
     },
     {
@@ -104,9 +127,6 @@
         "Haluaisin puhua ihmisen kanssa",
         "Saisinko jättää tukipyynnön",
         "Miten voin ottaa yhteyttä asiakaspalveluun?"
-      ],
-      "responses" : [
-        "Tässä on linkki, minkä kautta voit jättää yhteydenottopyynnön: gjnhbhj"
       ]
     },
     {
@@ -118,10 +138,22 @@
         "Tarvitsen lisää muistia budjetilla",
         "Mikä olis paras tietokone?",
         "Halpa kaapeli",
-        "Edullinen näppis"
+        "Edullinen näppis",
+        "Koneessani ei ole tarpeeksi muistia",
+        "Muisti käy vähiin koneessani",
+        "Haluaisin päivittää näyttöni",
+        "Tarvisin uuden näytön",
+        "Haluisin uuden koneen",
+        "Tarvitsen paremman hiiren",
+        "Mitä koneita teillä on?",
+        "Mitä hiiriä teillä on myynnissä",
+        "Mitä näyttöjä on saatavilla?",
+        "Mikä olisi kallein hiiri",
+        "Mitkä olisivat halvimmat näytöt",
+        "Mitkä olisivat edullisimmat muistit"
       ],
       "responses": [
-        "Katsotaanpa sopivia tuotteita sinulle!"
+        "Kannattaa käydä katsomassa meidän tuotevalikoima, mutta nyt katsotaanpa sinulle sopivia tuotteita!"
       ]
     },
     {

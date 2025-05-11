@@ -48,19 +48,22 @@ def recommend_product(user_input):
         recommended = [p for p in recommended if match_category(p, "Computer")]
 
     if "läppäri" in user_input.lower() or "kannettava" in user_input.lower():
-        recommended = [p for p in recommended if match_category("Laptop")]
+        recommended = [p for p in recommended if match_category(p, "Laptop")]
 
     if "näppäimistö" in user_input.lower():
-        recommended = [p for p in recommended if match_category("Keyboard")]
+        recommended = [p for p in recommended if match_category(p, "Keyboard")]
 
     if "hiir" in user_input.lower():
-        recommended = [p for p in recommended if match_category("Mouse")]
+        recommended = [p for p in recommended if match_category(p, "Mouse")]
 
     if "kaapel" in user_input.lower() or "piuha" in user_input.lower() or "johto" in user_input.lower():
         recommended = [p for p in recommended if match_category(p, "Cable")]
 
     if "budjet" in user_input.lower() or "edullinen" in user_input.lower() or "halpa" in user_input.lower():
         recommended = sorted(recommended, key=lambda x: x.get("price", 99999))
+
+    if "kallein" in user_input.lower() or "hintava" in user_input.lower() or "arvokas" in user_input.lower():
+        recommended = sorted(recommended, key=lambda x: x.get("price", 0), reverse= True)
 
     # Return top 3 best matches
     return recommended[:3]
@@ -163,8 +166,6 @@ def chat_loop():
                         print(f"{bot_name}: Tässä parhaat ehdotukset:")
                         for product in recoms:
                             print(f"- {product['name']} ({product['price']}€)")
-                        else:
-                                print(f"{bot_name}: En löytänyt sopivaa tuotetta annetuilla hakuehdoilla.")
                 
                     elif tag == "recommend":
                         print(f"{bot_name}: {random.choice(intent['responses'])}")

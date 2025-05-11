@@ -7,3 +7,9 @@ USER: heippa | INTENT: unknown
 [2025-04-27 20:24:10] USER: entäs halpaa konetta | INTENT: unknown
 [2025-05-04 17:29:58] USER: suosittele tuotte | INTENT: unknown
 [2025-05-04 17:30:21] USER: entä halpa kaapeli | INTENT: unknown
+[2025-05-11 21:50:34] USER: ei | INTENT: unknown
+[2025-05-11 21:57:59] USER: ei | INTENT: unknown
+[2025-05-11 22:09:13] USER: mitkä olisi kalleimmat hiiret | INTENT: unknown
+[2025-05-11 23:10:30] USER: suosittele konetta | INTENT: unknown
+[2025-05-11 23:10:54] USER:  | INTENT: unknown
+[2025-05-11 23:42:21] USER:  | INTENT: unknown

@@ -41,28 +41,28 @@ def recommend_product(user_input):
     def match_category(p, category_key):
         return category_key.lower() in p.get("category", "").lower()
 
-    if "muisti" in user_input.lower():
+    if "memor" in user_input.lower():
         recommended = [p for p in recommended if match_category(p, "RAM")]
 
-    if "tietokone" in user_input.lower() or "kone" in user_input.lower():
+    if "compute" in user_input.lower() or "pc" in user_input.lower():
         recommended = [p for p in recommended if match_category(p, "Computer")]
 
-    if "läppäri" in user_input.lower() or "kannettava" in user_input.lower():
+    if "laptop" in user_input.lower() or "notebook" in user_input.lower():
         recommended = [p for p in recommended if match_category(p, "Laptop")]
 
-    if "näppäimistö" in user_input.lower():
+    if "keyboard" in user_input.lower():
         recommended = [p for p in recommended if match_category(p, "Keyboard")]
 
-    if "hiir" in user_input.lower():
+    if "mouse" in user_input.lower():
         recommended = [p for p in recommended if match_category(p, "Mouse")]
 
-    if "kaapel" in user_input.lower() or "piuha" in user_input.lower() or "johto" in user_input.lower():
+    if "cabel" in user_input.lower() or "wire" in user_input.lower() or "cord" in user_input.lower():
         recommended = [p for p in recommended if match_category(p, "Cable")]
 
-    if "budjet" in user_input.lower() or "edullinen" in user_input.lower() or "halpa" in user_input.lower():
+    if "budjet" in user_input.lower() or "cheap" in user_input.lower() or "low" in user_input.lower() or "affordable" in user_input.lower() or "least" in user_input.lower():
         recommended = sorted(recommended, key=lambda x: x.get("price", 99999))
 
-    if "kallein" in user_input.lower() or "hintava" in user_input.lower() or "arvokas" in user_input.lower():
+    if "expensive" in user_input.lower() or "pricey" in user_input.lower() or "valuable" in user_input.lower():
         recommended = sorted(recommended, key=lambda x: x.get("price", 0), reverse= True)
 
     # Return top 3 best matches
@@ -121,24 +121,24 @@ def log_unknown_input(sentence):
 
 #creating a ticket
 def handle_ticket(sentence):
-    print(f"{bot_name}: Voisitko kuvailla ongelmasi ja jättää yhteystietosi, kiitos!")
-    ticket = input("Sinä: ")
+    print(f"{bot_name}: Could you describe your problem and leave your email, thank you!")
+    ticket = input("You: ")
 
     with open("tickets.txt", "a", encoding="utf-8") as ticket_file:
         ticket_file.write(f"[{timestamp}]\nCONTACT REQUEST:\nMessage: {sentence.strip()}\nUser Info: {ticket.strip()}\n---\n")
 
-    print(f"{bot_name}: Kiitos! Olemme tallentaneet tietosi. Palaamme asiaan heti kun pystymme!")
+    print(f"{bot_name}: Thank you! We have saved your information and we'll contact you as soon as possible!")
 
 def chat_loop():
 
     #Starts an infinite loop that waits for user input
     #Exits when the user types quit
-    print("Hei! Miten voin olla avuksi? :) Jos haluat lopettaa keskustelun, kirjoita stop.")
+    print("Hello! How can I help? :) If you want to end the conversation just write stop.")
 
     waiting_for_recom_desc = False
 
     while True:
-        raw_sentence = input('Sinä: ')
+        raw_sentence = input('You: ')
         if raw_sentence == "stop":
             break
 
@@ -146,11 +146,11 @@ def chat_loop():
         if waiting_for_recom_desc:
             recoms = recommend_product(raw_sentence)
             if recoms:
-                print(f"{bot_name}: Tässä muutama vaihtoehto sinulle:")
+                print(f"{bot_name}: Here are a few recommendations for you:")
                 for product in recoms:
                     print(f"- {product['name']} ({product['price']}€)")
             else:
-                print(f"{bot_name}: Valitettavasti en löytänyt sopivaa tuotetta kuvauksen perusteella.")
+                print(f"{bot_name}: Unfortunately I couldn't find any matching products based on your description.")
             waiting_for_recom_desc = False  # reset
             continue
 
@@ -164,11 +164,11 @@ def chat_loop():
                     if tag == "recommend_product":
                         recoms = recommend_product(raw_sentence)
                         if recoms:
-                            print(f"{bot_name}: Tässä parhaat ehdotukset:")
+                            print(f"{bot_name}: Here are the best matches:")
                             for product in recoms:
                                 print(f"- {product['name']} ({product['price']}€)")
                         else:
-                            print(f"{bot_name}: En löytänyt sopivaa tuotetta annetuilla hakuehdoilla.")
+                            print(f"{bot_name}: I couldn't find any matching products based on your description.")
                                 
                     elif tag == "recommend":
                         print(f"{bot_name}: {random.choice(intent['responses'])}")
@@ -188,21 +188,21 @@ def chat_loop():
                         
                     elif tag == "thanks":
                         follow = input("Sinä: ").lower()
-                        if follow in ["kyllä", "joo", "haluan", "ok", "juu"]:
+                        if follow in ["yes", "yeah", "yup", "ok"]:
                             handle_ticket(raw_sentence)
                         else:
-                            print(f"{bot_name}: Selvä juttu! Hyvää päivänjatkoa!")
+                            print(f"{bot_name}: Got it :) have a nice day!")
                         return
                     break
         else:
-            print(f"{bot_name}: Pahoittelut, nyt en ymmärtänyt. Haluatko jättää yhteydenottopyynnön?")
+            print(f"{bot_name}: I'm sorry, I don't understand what you mean. Would you like to leave a contact request?")
             log_unknown_input(raw_sentence)
 
-            follow = input("Sinä: ").lower()
-            if follow in ["kyllä", "joo", "haluan", "ok", "juu"]:
+            follow = input("You: ").lower()
+            if follow in ["yes", "yeah", "yup", "ok"]:
                 handle_ticket(raw_sentence)
             else:
-                print(f"{bot_name}: Selvä juttu! Hyvää päivänjatkoa!")
+                print(f"{bot_name}: Got it :) have a nice day!")
             return
         
 if __name__ == "__main__":

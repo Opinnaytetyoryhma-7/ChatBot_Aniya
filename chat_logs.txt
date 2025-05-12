@@ -13,3 +13,4 @@ USER: heippa | INTENT: unknown
 [2025-05-11 23:10:30] USER: suosittele konetta | INTENT: unknown
 [2025-05-11 23:10:54] USER:  | INTENT: unknown
 [2025-05-11 23:42:21] USER:  | INTENT: unknown
+[2025-05-13 00:02:10] USER: can you recommend a cheap laptop | INTENT: unknown

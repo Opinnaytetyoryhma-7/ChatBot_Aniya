@@ -3,169 +3,219 @@
     {
       "tag": "greeting",
       "patterns": [
-        "Hei",
-        "Moi",
-        "Mitä kuuluu",
-        "Onko siellä ketään",
-        "Heippa",
-        "Päivää",
-        "Moikka",
-        "Miten menee?",
-        "Terve",
-        "Tervehdys",
-        "Hei miten menee?"
+        "Hi",
+        "Heya",
+        "Hey!",
+        "Is anyone there?",
+        "Bye",
+        "Good day",
+        "Hello",
+        "Yo",
+        "Greetings"
       ],
       "responses": [
-        "Hei :)",
-        "Moikka",
-        "Hei vain. Voisinko auttaa jotenkin?",
-        "Hei!"
+        "Hi :)",
+        "Hello",
+        "Hi there. How can I help you?"
+      ]
+    },
+    {
+      "tag": "How_you",
+      "patterns": [
+        "How's you?",
+        "How's it going?",
+        "How're you doing?",
+        "Hi, how are you?"
+      ],
+      "responses": [
+        "I'm a machine. I guess I'm doing ok since I'm able to answer you :D"
       ]
     },
     {
       "tag": "no",
       "patterns": [
-        "ei",
-        "eikä",
-        "en"
+        "no",
+        "nope",
+        "nah"
       ],
       "responses": [
-        "Missä voisin auttaa?"
+        "How could I help you?"
       ]
     },
     {
       "tag": "goodbye",
       "patterns": [
-        "Nähdään",
-        "Hyvästi"
-        ],
+        "See you",
+        "Goodbye"
+      ],
       "responses": [
-        "Heippa! Kiva kun kävit sivuillamme!",
-        "Mukavaa päivänjatkoa! :)",
-        "Hei hei! Tervetuloa takaisin!"
+        "Bye! Thank you for vising our site!",
+        "Have a nice day! :)",
+        "Bye bye! Come back any time!"
       ]
     },
     {
       "tag": "wondering",
       "patterns": [
-        "Mitä sinulta voi kysyä?",
-        "Mitä sinä teet?",
-        "Mitä osaat tehdä?"
-        ],
+        "What can I ask you?",
+        "What do you do?",
+        "What can you do?"
+      ],
       "responses": [
-        "Voin yrittää auttaa sinua tietokoneeseesi tai oheislaitteisiisi liittyvien ongelmien kanssa, tai voit halutessasi jättää tukipyynnön."
+        "I can try to help you with issues related to your computer or peripherals, or you can leave a support request if you like."
       ]
     },
     {
       "tag": "thanks",
       "patterns": [
-        "Kiitos", 
-        "Kiitos paljon",
-        "Tämä ratkaisi ongelmani", 
-        "Tästä oli apua"],
+        "Thanks",
+        "Thank you very much",
+        "This solved my problem",
+        "This was helpful"
+      ],
       "responses": [
-        "Ilo olla avuksi! Oliko muuta missä voin auttaa?"
-         ]
+        "Happy to help! Anything else I can do for you?"
+      ]
     },
     {
       "tag": "items",
       "patterns": [
-        "Mitä tuotteita teillä on myynnissä?",
-        "Mitä myytte",
-        "Mitä minun kannattaisi ostaa",
-        "Millaisia tuotteita teillä on saatavilla?"
+        "What products do you have for sale?",
+        "What do you sell?",
+        "What should I buy?",
+        "What kind of products are available?"
       ],
       "responses": [
-        "Myymme tietokonetarvikkeita. Käy rohkeasti selaamassa tuotevalikoimaamme! Voin myös suositella tuotetta hinnan mukaan."
+        "We sell computers and their peripherals. Feel free to look at our product page! I can also recommend products based on price."
       ]
     },
     {
       "tag": "delivery_time",
       "patterns": [
-        "Kauanko toimituksessa suunnilleen meneee?",
-        "Miten kauan toimituksessa kestää?",
-        "Milloin saan tuotteeni?",
-        "Kauan toimituksessa kestää?"
+        "How long does delivery approximately take?",
+        "How long does delivery take?",
+        "When will I get my product?",
+        "How long will the delivery take?"
       ],
       "responses": [
-        "Toimituksessa kestää suunnilleen 4-10 päivää"
+        "Delivery takes approximately 4-10 days"
       ]
     },
     {
       "tag": "product_problem",
       "patterns": [
-        "Ostamassani tuotteessa on ongelma",
-        "Tuote on viallinen",
-        "Tietokoneeni ei toimi",
-        "Koneessani on jotain vikaa",
-        "Ostamani tuote on rikki"
+        "There's a problem with the product I bought",
+        "The product is defective",
+        "My computer doesn't work",
+        "There is something wrong with my machine",
+        "The product I bought is broken"
       ],
       "responses": [
-        "Ikävä kuulla. Voisitko kuvailla ongelmaa?",
-        "Todella harmillista. Kuvailisitko ongelmaa?"
+        "Sorry to hear that. Could you describe the issue?",
+        "Really unfortunate. Could you explain the problem?"
       ]
     },
     {
       "tag": "problem",
       "patterns": [
-        "Osaatko auttaa?",
-        "Tarvitsisin apua",
-        "En ymmärrä erästä juttua",
-        "Miten tämä toimii",
-        "Tarvin apua",
-        "apua"
+        "Can you help?",
+        "I need help",
+        "I don't understand something",
+        "How does this work",
+        "Need help",
+        "help"
       ],
       "responses": [
-        "Kuvailisitko ongelmaa, vai haluatko jättää tukipyynnön?"
+        "Could you describe the problem, or would you like to submit a support request?"
       ]
     },
     {
       "tag": "ticket_asking",
       "patterns": [
-        "Tukipyyntö",
-        "Tukipyynnön",
-        "Haluaisin puhua ihmisen kanssa",
-        "Saisinko jättää tukipyynnön",
-        "Miten voin ottaa yhteyttä asiakaspalveluun?"
+        "Support request",
+        "I want to leave a support request",
+        "I'd like to talk to a human",
+        "Could I submit a support request?",
+        "How can I contact customer service?"
       ]
     },
     {
       "tag": "recommend_product",
       "patterns": [
-        "Tarvitsen uuden tietokoneen",
-        "Mikä RAM olisi hyvä ja halpa?",
-        "Etsin hyvää hiirtä edullisesti",
-        "Tarvitsen lisää muistia budjetilla",
-        "Mikä olis paras tietokone?",
-        "Halpa kaapeli",
-        "Edullinen näppis",
-        "Koneessani ei ole tarpeeksi muistia",
-        "Muisti käy vähiin koneessani",
-        "Haluaisin päivittää näyttöni",
-        "Tarvisin uuden näytön",
-        "Haluisin uuden koneen",
-        "Tarvitsen paremman hiiren",
-        "Mitä koneita teillä on?",
-        "Mitä hiiriä teillä on myynnissä",
-        "Mitä näyttöjä on saatavilla?",
-        "Mikä olisi kallein hiiri",
-        "Mitkä olisivat halvimmat näytöt",
-        "Mitkä olisivat edullisimmat muistit"
+        "I need a new computer",
+        "Which RAM is good and cheap?",
+        "Looking for a good mouse affordably",
+        "Need more memory on a budget",
+        "What would be the best computer?",
+        "Cheap cable",
+        "Affordable keyboard",
+        "My machine doesn't have enough memory",
+        "Memory is running low on my computer",
+        "I'd like to upgrade my monitor",
+        "I need a new monitor",
+        "I'd like a new computer",
+        "I need a better mouse",
+        "What computers do you have?",
+        "What mice do you have for sale?",
+        "What monitors are available?",
+        "What is the most expensive mouse?",
+        "What are the cheapest monitors?",
+        "What are the most affordable memory options?",
+        "can you recommend a cheap laptop?",
+        "Can you recommend an expensive mouse",
+        "Recommend a random product"
       ],
       "responses": [
-        "Katsotaanpa sinulle sopivia tuotteita!"
+        "Let's find you some suitable products!"
       ]
     },
     {
       "tag": "recommend",
       "patterns": [
-        "Suosittele minulle laitetta",
-        "Suosittelisitko tuotetta",
-        "Osaisitko kertoa mikä olisi hyvä laite?",
-        "Voisitko suositella tuotetta"
+        "Recommend a device for me",
+        "Would you recommend a product?",
+        "Could you tell me what would be a good device?",
+        "Could you recommend a product?"
       ],
       "responses": [
-        "Voisitko kuvailla millaista laitetta tarvitsisit?"
+        "Could you describe what kind of device you need?"
+      ]
+    },
+    {
+      "tag": "pc_not_working",
+      "patterns": [
+        "My pc has an issue",
+        "My computer is broken",
+        "My laptop wont start",
+        "I think my product is defective"
+      ],
+      "responses": [
+        "I recommend trying to turn it off and on again. If that doesn't work, please leave a contact request."
+      ]
+    },
+    {
+      "tag": "ugly",
+      "patterns": [
+        "The product I bought is ugly",
+        "My pc is the wrong color",
+        "I don't like the look of my laptop",
+        "This mouse looks horrible"
+      ],
+      "responses": [
+        "Well boohoo"
+      ]
+    },
+    {
+      "tag": "mean",
+      "patterns": [
+        "I hate you",
+        "You suck",
+        "fuck you",
+        "I don't like you",
+        "You're useless"
+      ],
+      "responses": [
+        "Aren't you lovely"
       ]
     }
   ]

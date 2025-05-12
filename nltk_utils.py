@@ -7,7 +7,7 @@ import numpy as np
 from nltk.stem.snowball import SnowballStemmer
 
 nlp = stanza.Pipeline('fi', processors='tokenize')
-stemmer=SnowballStemmer("finnish")
+stemmer=SnowballStemmer("english")
 
 #Splits a sentence into words/tokens
 def tokenize(sentence):

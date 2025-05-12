@@ -34,3 +34,6 @@ def get_user_by_id(user_id: str):
 
 def get_products():
     return supabase.table("Product").select("*").execute()
+
+def get_tickets():
+    return supabase.table("Ticket").select("*")

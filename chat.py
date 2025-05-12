@@ -163,10 +163,13 @@ def chat_loop():
                 if tag == intent["tag"]:
                     if tag == "recommend_product":
                         recoms = recommend_product(raw_sentence)
-                        print(f"{bot_name}: Tässä parhaat ehdotukset:")
-                        for product in recoms:
-                            print(f"- {product['name']} ({product['price']}€)")
-                
+                        if recoms:
+                            print(f"{bot_name}: Tässä parhaat ehdotukset:")
+                            for product in recoms:
+                                print(f"- {product['name']} ({product['price']}€)")
+                        else:
+                            print(f"{bot_name}: En löytänyt sopivaa tuotetta annetuilla hakuehdoilla.")
+                                
                     elif tag == "recommend":
                         print(f"{bot_name}: {random.choice(intent['responses'])}")
                         waiting_for_recom_desc = True
@@ -182,6 +185,14 @@ def chat_loop():
                             return
                         if tag == "goodbye":
                             return
+                        
+                    elif tag == "thanks":
+                        follow = input("Sinä: ").lower()
+                        if follow in ["kyllä", "joo", "haluan", "ok", "juu"]:
+                            handle_ticket(raw_sentence)
+                        else:
+                            print(f"{bot_name}: Selvä juttu! Hyvää päivänjatkoa!")
+                        return
                     break
         else:
             print(f"{bot_name}: Pahoittelut, nyt en ymmärtänyt. Haluatko jättää yhteydenottopyynnön?")

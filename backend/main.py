@@ -1,6 +1,10 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
+from backend.database import supabase
+from fastapi import Request
+from pydantic import BaseModel
+from backend.database import update_product_availability
 from chat import get_response, intents
 from backend.database import (
     save_unknown_message,
@@ -8,6 +12,7 @@ from backend.database import (
     create_user,
     get_user_by_email,
     get_products,
+    update_product_availability,
 )
 from fastapi.middleware.cors import CORSMiddleware
 import random
@@ -34,6 +39,23 @@ app.add_middleware(
     allow_headers=["*"],  # sallii kaikki headerit
 )
 
+class ReviewInput(BaseModel):
+    clarity: str
+    ease_of_use: str
+    chatbot_feedback: str
+    contact_form_feedback: str
+
+class PurchaseItem(BaseModel):
+    name: str
+    quantity: int
+
+class ShoppingItem(BaseModel):
+    product_id: str
+    quantity: int
+
+class ProductUpdateRequest(BaseModel):
+    product_name: str
+    quantity: int  
 
 # Määritellään ChatInput-malli, joka määrittelee POST-pyynnössä vastaanotetun datan rakenteen
 class ChatInput(BaseModel):
@@ -178,3 +200,92 @@ async def read_users_me(current_user=Depends(get_current_user)):
 async def get_products_list():
     products = get_products()
     return products.data
+
+@app.get("/api/hello")
+async def read_root():
+    return {"message": "Hello from FastAPI backend!"}
+
+@app.post("/shopping-list")
+async def update_shopping_list(
+    items: list[ShoppingItem], current_user=Depends(get_current_user)
+):
+    updated_items = []
+    for item in items:
+        product = get_products(id=item.product_id).data[0]
+        if product["quantity"] < item.quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Not enough stock for {product['name']}"
+            )
+        
+        new_quantity = product["quantity"] - item.quantity
+        updated_items.append({"id": item.product_id, "new_quantity": new_quantity})
+    
+    return {"status": "success", "updated": updated_items}
+
+@app.patch("/products/update")
+async def update_product_quantity(update: ProductUpdateRequest):
+    # Fetch product by ID
+    product = get_products().data
+    target = next((p for p in product if p["id"] == update.product_id), None)
+
+    if not target:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    if target["availability"] < update.quantity:
+        raise HTTPException(status_code=400, detail="Not enough stock")
+
+    new_qty = target["availability"] - update.quantity
+    update_product_availability(update.product_id, new_qty)
+
+    return {
+        "message": "Product updated",
+        "product_name": target["name"],
+        "new_quantity": new_qty
+    }
+
+
+from typing import List
+
+class PurchaseItem(BaseModel):
+    name: str
+    quantity: int
+
+@app.post("/purchase")
+async def purchase_cart_items(items: list[PurchaseItem]):
+    if not items:
+        raise HTTPException(status_code=400, detail="No items provided for purchase.")
+
+    try:
+        updates = update_product_availability([item.dict() for item in items])
+        print("Purchase updates:", updates)  #Logs
+        return {"message": "Purchase completed and inventory updated.", "updates": updates}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error during purchase: {str(e)}")
+    
+
+
+ADMIN_SECRET_KEY = "your-very-secret-key"  # Need to move to .env in proper form later
+
+@app.get("/admin/tickets")
+async def get_all_tickets(request: Request):
+    key = request.query_params.get("key")
+    if key != ADMIN_SECRET_KEY:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    result = supabase.table("Ticket").select("*").execute()
+    return result.data
+
+@app.post("/review")
+async def submit_review(input: ReviewInput):
+    result = supabase.table("Review").insert({
+        "clarity": input.clarity,
+        "ease_of_use": input.ease_of_use,
+        "chatbot_feedback": input.chatbot_feedback,
+        "contact_form_feedback": input.contact_form_feedback,
+    }).execute()
+
+    if result.error:
+        raise HTTPException(status_code=500, detail="Failed to submit review")
+
+    return {"message": "Arvostelu vastaanotettu! Kiitos palautteestasi."}

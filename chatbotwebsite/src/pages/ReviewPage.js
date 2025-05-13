@@ -24,7 +24,7 @@ function ReviewPage() {
     });
 
     if (res.ok) {
-      setMessage("Kiitos palautteestasi!");
+      setMessage("Thank you for your feedback!");
       setForm({
         clarity: "",
         ease_of_use: "",
@@ -32,27 +32,27 @@ function ReviewPage() {
         contact_form_feedback: "",
       });
     } else {
-      setMessage("Palautteen lähettäminen epäonnistui.");
+      setMessage("Sending feedback failed.");
     }
   };
 
   return (
     <div style={{ padding: "2rem", maxWidth: "600px", margin: "auto" }}>
-      <h2>Palautelomake</h2>
+      <h2>Feedback form</h2>
       <form onSubmit={handleSubmit}>
-        <label>Kuinka selkeät verkkosivut ovat?</label>
+        <label>How is the websites outlook?</label>
         <textarea name="clarity" value={form.clarity} onChange={handleChange} />
 
-        <label>Oliko helppo löytää haluama tieto sivustolta?</label>
+        <label>Were you able to find what you were looking for in the website?</label>
         <textarea name="ease_of_use" value={form.ease_of_use} onChange={handleChange} />
 
-        <label>Antoiko chatbot asiaan liittyviä vastauksia?</label>
+        <label>Did the chatbot give useful answers matching your input?</label>
         <textarea name="chatbot_feedback" value={form.chatbot_feedback} onChange={handleChange} />
 
-        <label>Saitko täytettyä ja lähetettyä yhteydenottolomakkeen ja oliko sen teko selkeää?</label>
+        <label>Did you manage to send an contact request and was it easy to fill out?</label>
         <textarea name="contact_form_feedback" value={form.contact_form_feedback} onChange={handleChange} />
 
-        <button type="submit">Lähetä palaute</button>
+        <button type="submit">Submit</button>
       </form>
       {message && <p>{message}</p>}
     </div>

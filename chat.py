@@ -122,12 +122,22 @@ def log_unknown_input(sentence):
 #creating a ticket
 def handle_ticket(sentence):
     print(f"{bot_name}: Could you describe your problem and leave your email, thank you!")
-    ticket = input("You: ")
+    
+    #ask for problem details and email and set time
+    issue_description = input("Your issue: ").strip()
+    user_email = input("Your email: ").strip()
+    timestamp = datetime.now().isoformat()
 
-    with open("tickets.txt", "a", encoding="utf-8") as ticket_file:
-        ticket_file.write(f"[{timestamp}]\nCONTACT REQUEST:\nMessage: {sentence.strip()}\nUser Info: {ticket.strip()}\n---\n")
+    response = supabase.table("Ticket").insert({
+        "issue_description": issue_description,
+        "user_email": user_email,
+        "created_at": timestamp
+    }).execute()
 
-    print(f"{bot_name}: Thank you! We have saved your information and we'll contact you as soon as possible!")
+    if response.data:
+        print(f"{bot_name}: Thank you! We have saved your information and we'll contact you as soon as possible!")
+    else:
+        print(f"{bot_name}: Oops! Something went wrong. ERROR :( {response.data}")
 
 def chat_loop():
 

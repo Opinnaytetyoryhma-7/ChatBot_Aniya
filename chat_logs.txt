@@ -1,0 +1,22 @@
+USER: se on ruma | INTENT: unknown
+USER: apua | INTENT: unknown
+USER: heippa | INTENT: unknown
+[2025-04-08 17:45:46] USER: joo | INTENT: unknown
+[2025-04-27 20:21:16] USER: voisitko suositella tietokonetta | INTENT: unknown
+[2025-04-27 20:22:48] USER: en | INTENT: unknown
+[2025-04-27 20:24:10] USER: entäs halpaa konetta | INTENT: unknown
+[2025-05-04 17:29:58] USER: suosittele tuotte | INTENT: unknown
+[2025-05-04 17:30:21] USER: entä halpa kaapeli | INTENT: unknown
+[2025-05-11 21:50:34] USER: ei | INTENT: unknown
+[2025-05-11 21:57:59] USER: ei | INTENT: unknown
+[2025-05-11 22:09:13] USER: mitkä olisi kalleimmat hiiret | INTENT: unknown
+[2025-05-11 23:10:30] USER: suosittele konetta | INTENT: unknown
+[2025-05-11 23:10:54] USER:  | INTENT: unknown
+[2025-05-11 23:42:21] USER:  | INTENT: unknown
+[2025-05-13 00:02:10] USER: can you recommend a cheap laptop | INTENT: unknown
+[2025-05-13 18:47:47] USER: who are you | INTENT: unknown
+[2025-05-13 19:09:47] USER: request | INTENT: unknown
+[2025-05-13 20:27:02] USER: rjaqtykj | INTENT: unknown
+[2025-05-13 21:00:00] USER: i have an ugly pc | INTENT: unknown
+[2025-05-13 21:08:23] USER: nice to meet you | INTENT: unknown
+[2025-05-13 21:17:17] USER: my pc isn't working | INTENT: unknown

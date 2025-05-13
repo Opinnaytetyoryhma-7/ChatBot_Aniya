@@ -1,0 +1,275 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "Hi",
+        "Heya",
+        "Hey!",
+        "Is anyone there?",
+        "Good day",
+        "Hello",
+        "Yo",
+        "Greetings"
+      ],
+      "responses": [
+        "Hi :)",
+        "Hello",
+        "Hi there. How can I help you?"
+      ]
+    },
+    {
+      "tag": "who_you",
+      "patterns": [
+        "What's your name",
+        "Who are you",
+        "What are you called?",
+        "What is your name?",
+        "Tell me about you",
+        "What can I call you"
+      ],
+      "responses": [
+        "My name is Anya. Nice to meet you!"
+      ]
+    },
+    {
+      "tag": "How_you",
+      "patterns": [
+        "How's you?",
+        "How's it going?",
+        "How're you doing?",
+        "Hi, how are you?",
+        "What's up?"
+      ],
+      "responses": [
+        "I'm a machine so I guess I'm doing good since I'm able to answer you :D"
+      ]
+    },
+    {
+      "tag": "no",
+      "patterns": [
+        "no",
+        "nope",
+        "nah",
+        "No thanks",
+        "Not interested",
+        "Nada",
+        "Nice to meet you!",
+        "Happy to meet you"
+      ],
+      "responses": [
+        "How could I help you?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "See you",
+        "Goodbye",
+        "Bye bye",
+        "I'm leaving",
+        "See you later",
+        "Farewell",
+        "Bye"
+      ],
+      "responses": [
+        "Bye! Thank you for vising our site!",
+        "Have a nice day! :)",
+        "Bye bye! Come back any time!"
+      ]
+    },
+    {
+      "tag": "wondering",
+      "patterns": [
+        "What can I ask you?",
+        "What do you do?",
+        "What can you do?",
+        "What should I use you for",
+        "How are you helpful?",
+        "What are you supposed to do?",
+        "How can you help",
+        "How are you helpful",
+        "What can you help me with"
+      ],
+      "responses": [
+        "I can try to help you with issues related to your computer or peripherals, or you can leave a support request if you like."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thanks",
+        "Thank you very much",
+        "This solved my problem",
+        "This was helpful",
+        "Thank you for the help",
+        "I'm thankful",
+        "I'm very pleased"
+      ],
+      "responses": [
+        "Happy to help! Anything else I can do for you?"
+      ]
+    },
+    {
+      "tag": "items",
+      "patterns": [
+        "What products do you have for sale?",
+        "What do you sell?",
+        "What should I buy?",
+        "What kind of products are available?",
+        "What do you have for sale"
+      ],
+      "responses": [
+        "We sell computers and their peripherals. Feel free to look at our product page! I can also recommend products based on price."
+      ]
+    },
+    {
+      "tag": "delivery_time",
+      "patterns": [
+        "How long does delivery approximately take?",
+        "How long does delivery take?",
+        "When will I get my product?",
+        "How long will the delivery take?",
+        "When will I get my order",
+        "When will my product arrive"
+      ],
+      "responses": [
+        "Delivery takes approximately 4-10 days"
+      ]
+    },
+    {
+      "tag": "product_problem",
+      "patterns": [
+        "There's a problem with the product I bought",
+        "The product is defective",
+        "My computer doesn't work",
+        "There is something wrong with my machine",
+        "The product I bought is broken",
+        "The thing I bought is defective"
+      ],
+      "responses": [
+        "Sorry to hear that. Could you describe the issue?",
+        "Really unfortunate. Could you explain the problem?"
+      ]
+    },
+    {
+      "tag": "problem",
+      "patterns": [
+        "Can you help?",
+        "I need help",
+        "I don't understand something",
+        "How does this work",
+        "Need help",
+        "help",
+        "I'm lost",
+        "Plz help me",
+        "Can you please help"
+      ],
+      "responses": [
+        "Could you describe the problem, or would you like to submit a support request?"
+      ]
+    },
+    {
+      "tag": "ticket_asking",
+      "patterns": [
+        "Support request",
+        "I want to leave a support request",
+        "I'd like to talk to a human",
+        "Could I submit a support request?",
+        "How can I contact customer service?"
+      ],
+      "responses": [
+        "Sure thing!"
+      ]
+    },
+    {
+      "tag": "recommend_product",
+      "patterns": [
+        "I need a new computer",
+        "Which RAM is good and cheap?",
+        "Looking for a good mouse affordably",
+        "Need more memory on a budget",
+        "What would be the best computer?",
+        "Cheap cable",
+        "Affordable keyboard",
+        "My machine doesn't have enough memory",
+        "Memory is running low on my computer",
+        "I'd like to upgrade my monitor",
+        "I need a new monitor",
+        "I'd like a new computer",
+        "I need a better mouse",
+        "What computers do you have?",
+        "What mice do you have for sale?",
+        "What monitors are available?",
+        "What is the most expensive mouse?",
+        "What are the cheapest monitors?",
+        "What are the most affordable memory options?",
+        "can you recommend a cheap laptop?",
+        "Can you recommend an expensive mouse",
+        "Recommend a random product",
+        "What's a good pc?"
+      ],
+      "responses": [
+        "Let's find you some suitable products!"
+      ]
+    },
+    {
+      "tag": "recommend",
+      "patterns": [
+        "Recommend a device for me",
+        "Would you recommend a product?",
+        "Could you tell me what would be a good device?",
+        "Could you recommend a product?",
+        "Can you give me a tip on what to get?",
+        "Can I ask you recommendations?"
+      ],
+      "responses": [
+        "Could you describe what kind of device you need?"
+      ]
+    },
+    {
+      "tag": "pc_not_working",
+      "patterns": [
+        "My pc has an issue",
+        "My computer is broken",
+        "My laptop wont start",
+        "I think my product is defective",
+        "My notebook doesn't work",
+        "I think my pc is broken",
+        "My computer isn't working"
+      ],
+      "responses": [
+        "I recommend trying to turn it off and on again. If that doesn't work, please leave a contact request."
+      ]
+    },
+    {
+      "tag": "ugly",
+      "patterns": [
+        "The product I bought is ugly",
+        "My pc is the wrong color",
+        "I don't like the look of my laptop",
+        "This mouse looks horrible",
+        "I have an ugly computer",
+        "My product is looking ugly"
+      ],
+      "responses": [
+        "Well boohoo"
+      ]
+    },
+    {
+      "tag": "mean",
+      "patterns": [
+        "I hate you",
+        "You suck",
+        "fuck you",
+        "I don't like you",
+        "You're useless",
+        "You're dumb",
+        "You are awful"
+      ],
+      "responses": [
+        "Aren't you lovely. I recommend talking to a someone."
+      ]
+    }
+  ]
+}

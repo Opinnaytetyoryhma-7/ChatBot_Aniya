@@ -1,0 +1,27 @@
+CONTACT REQUEST:
+Message: hei
+User Info: et ymmärrä hei. 00000 numeroni
+---
+CONTACT REQUEST:
+Message: siinä on kolhu
+User Info: tietokoneessa on kolhu nro 0000
+---
+CONTACT REQUEST:
+Message: se on ruma
+User Info: koneeni on ruma puh 0000
+---
+[2025-04-08 17:45:46]
+CONTACT REQUEST:
+Message: joo
+User Info: ei
+---
+[2025-05-13 19:09:47]
+CONTACT REQUEST:
+Message: request
+User Info: stop
+---
+[2025-05-13 20:27:02]
+CONTACT REQUEST:
+Message: rjaqtykj
+User Info: wfeho
+---

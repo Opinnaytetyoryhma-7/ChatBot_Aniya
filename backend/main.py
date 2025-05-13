@@ -87,13 +87,13 @@ async def chat(input: ChatInput):
                 if tag == "recommend_product":
                     products = recommend_product(input.message)
                     if products:
-                        response_text = "Tässä parhaat ehdotukset: \n" + "\n".join(
+                        response_text = "Here are the best matches: \n" + "\n".join(
                             f"- {product['name']} ({product['price']}€)"
                             for product in products
                         )
                     else:
                         response_text = (
-                            "En löytänyt sopivaa tuotetta annetuilla hakuehdoilla."
+                            "I couldn't find any matching products based on your description."
                         )
 
                     return {"response": response_text}
@@ -122,25 +122,25 @@ async def chat(input: ChatInput):
     match state:
         case None | "":
             return {
-                "response": "Pahoittelut, nyt en ymmärtänyt. Haluatko jättää tukipyynnön?",
+                "response": "I'm sorry, I don't understand what you mean. Would you like to leave a contact request?",
                 "conversation_state": "ask_ticket",
             }
 
         case "ask_ticket":
-            if msg in ["kyllä", "joo", "haluan", "ok", "juu"]:
+            if msg in ["yes", "yeah", "yup", "ok"]:
                 return {
-                    "response": "Voisitko kuvailla ongelmasi ja jättää yhteystietosi, kiitos!",
+                    "response": "Coul you describe your problem and leave your email, thank you!",
                     "conversation_state": "wait_description",
                 }
             else:
                 return {
-                    "response": "Selvä juttu! Hyvää päivänjatkoa!",
+                    "response": "Got it :) have a nice day!",
                     "conversation_state": "end",
                 }
 
         case "wait_description":
             return {
-                "response": "Kiitos! Lisää vielä sähköpostiosoitteesi, niin voimme ottaa sinuun yhteyttä",
+                "response": "Thank you! Please also leave your email address so we can contact you",
                 "conversation_state": "wait_email",
                 "issue_description": input.message,  # tallennetaan esim. React useStateen, lähetetään /ticket-pyynnössä
             }
@@ -148,12 +148,12 @@ async def chat(input: ChatInput):
         case "wait_recommendation":
             products = recommend_product(input.message)
             if products:
-                response_text = "Tässä muutama vaihtoehto sinulle: \n" + "\n".join(
+                response_text = "Here are a few recommendations for you: \n" + "\n".join(
                     f"- {product['name']} ({product['price']}€)" for product in products
                 )
             else:
                 response_text = (
-                    "Valitettavasti en löytänyt sopivaa tuotetta kuvauksen perusteella."
+                    "Unfortunately I couldn't find any matching products based on your description."
                 )
 
             return {
@@ -163,7 +163,7 @@ async def chat(input: ChatInput):
 
         case _:
             return {
-                "response": "Jokin meni pieleen. Yritetäänpä uudelleen.",
+                "response": "Something went wrong. Please try again.",
                 "conversation_state": None,
             }
 
@@ -174,7 +174,7 @@ async def ticket(input: TicketInput):
     create_ticket(input.issue_description, input.email)
 
     return {
-        "response": "Kiitos! Olemme tallentaneet tietosi. Palaamme asiaan heti kun pystymme!"
+        "response": "Thank you! We have saved your information and we'll contact you as soon as possible!",
     }
 
 
@@ -183,7 +183,7 @@ async def register_user(user: RegisterInput):
     existing_user = get_user_by_email(user.email)
     if existing_user.data:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Käyttäjä on jo olemassa"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
 
     hashed_pw = hash_password(user.password)
@@ -207,13 +207,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     if not res.data:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Käyttäjätunnus tai salasana virheellinen",
+            detail="Email or password is incorrect",
         )
     user = res.data[0]
     if not verify_password(form_data.password, user["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Käyttäjätunnus tai salasana virheellinen",
+            detail="Email or password is incorrect",
         )
 
     token = create_access_token({"sub": str(user["user_id"])})
@@ -235,7 +235,7 @@ async def get_products_list():
 
 @app.get("/admin/tickets", response_model=List[TicketOutput])
 async def get_tickets_list(
-    status: Optional[str] = Query(None, description="Suodata tiketit statuksen mukaan"),
+    status: Optional[str] = Query(None, description="Filter tickets by status"),
     current_user: dict = Depends(require_admin_user),
 ):
     try:

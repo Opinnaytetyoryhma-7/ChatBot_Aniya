@@ -10,6 +10,7 @@ from backend.database import (
     get_user_by_email,
     get_products,
     get_tickets,
+    create_review,
 )
 from fastapi.middleware.cors import CORSMiddleware
 import random
@@ -76,6 +77,12 @@ class Token(BaseModel):
 class UserOut(BaseModel):  # vältetäään palauttamasta salasanaa frontendille
     id: str
     email: EmailStr
+
+class FeedbackInput(BaseModel):
+    clarity: str
+    ease_of_use: str
+    chatbot_feedback: str
+    contact_form_feedback: str
 
 
 # Luodaan post-pyyntö, joka vastaanottaa käyttäjän viestin
@@ -266,5 +273,18 @@ async def get_tickets_list(
 
         return response.data
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/review")
+async def submit_feedback(feedback: FeedbackInput):
+    try:
+        create_review(
+            clarity=feedback.clarity,
+            ease_of_use=feedback.ease_of_use,
+            chatbot=feedback.chatbot_feedback,
+            contact_form=feedback.contact_form_feedback,
+        )
+        return {"message": "Feedback submitted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

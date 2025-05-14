@@ -37,3 +37,13 @@ def get_products():
 
 def get_tickets():
     return supabase.table("Ticket").select("*")
+
+def create_review(clarity: str, ease_of_use: str, chatbot: str, contact_form: str):
+    data = {
+        "clarity": clarity,
+        "ease_of_use": ease_of_use,
+        "chatbot": chatbot,
+        "contact_form": contact_form,
+    }
+    print("Creating review with data:", data)
+    return supabase.table("Review").insert(data).execute()

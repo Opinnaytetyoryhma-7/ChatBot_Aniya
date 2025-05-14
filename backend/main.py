@@ -42,6 +42,8 @@ app.add_middleware(
 class ChatInput(BaseModel):
     message: str  # käyttäjän lähettämä viesti
     conversation_state: str | None = None  # keskustelun tila, oletuksena None
+    issue_description: str | None = None  # ongelman kuvaus, oletuksena None
+
 
 
 class TicketInput(BaseModel):
@@ -103,6 +105,11 @@ async def chat(input: ChatInput):
                         "response": random.choice(intent["responses"]),
                         "conversation_state": "wait_recommendation",
                     }
+                if tag == "ticket_asking":
+                    return {
+                        "response": "Could you describe your problem and leave your email, thank you!",
+                        "conversation_state": "wait_description",
+                    }
 
                 if tag == "goodbye":
                     return {
@@ -113,14 +120,15 @@ async def chat(input: ChatInput):
 
                 return { "response": response}
 
-    # Jos botti ei tunnista viestiä, tallennetaan se Supabasen Message-tauluun
-    save_unknown_message(input.message)
+
 
     state = input.conversation_state  # kertoo missä kohtaa keskustelu on menossa
     msg = input.message.strip().lower()
 
     match state:
         case None | "":
+            # Jos botti ei tunnista viestiä, tallennetaan se Supabasen Message-tauluun
+            save_unknown_message(input.message)
             return {
                 "response": "I'm sorry, I don't understand what you mean. Would you like to leave a contact request?",
                 "conversation_state": "ask_ticket",
@@ -129,7 +137,7 @@ async def chat(input: ChatInput):
         case "ask_ticket":
             if msg in ["yes", "yeah", "yup", "ok"]:
                 return {
-                    "response": "Coul you describe your problem and leave your email, thank you!",
+                    "response": "Could you describe your problem and leave your email, thank you!",
                     "conversation_state": "wait_description",
                 }
             else:
@@ -144,6 +152,15 @@ async def chat(input: ChatInput):
                 "conversation_state": "wait_email",
                 "issue_description": input.message,  # tallennetaan esim. React useStateen, lähetetään /ticket-pyynnössä
             }
+
+        case "wait_email":
+            issue_description = input.issue_description
+            email = input.message.strip().lower()
+
+            result = await ticket(TicketInput(
+                issue_description=issue_description, email=email
+            ))
+            return result
 
         case "wait_recommendation":
             products = recommend_product(input.message)

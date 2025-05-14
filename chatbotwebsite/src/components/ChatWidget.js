@@ -6,6 +6,7 @@ function ChatWidget() {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [conversationState, setConversationState] = useState(null);
+    const [issueDescription, setIssueDescription] = useState('');
 
     const toggleChat = () => {
         setIsOpen(!isOpen);
@@ -25,6 +26,7 @@ function ChatWidget() {
                 body: JSON.stringify({
                     message: input,
                     conversation_state: conversationState,
+                    issue_description: issueDescription || null,
                 }),
             });
 
@@ -35,6 +37,10 @@ function ChatWidget() {
 
             if (data.conversation_state !== undefined) {
                 setConversationState(data.conversation_state);
+            }
+
+            if (conversationState === "wait_description") {
+                setIssueDescription(input);
             }
         } catch (error) {
             console.error("Chat error:", error);

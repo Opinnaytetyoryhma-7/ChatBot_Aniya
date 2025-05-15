@@ -9,9 +9,9 @@ def test_register_user():
     response = client.post(
         "/register",
         json={
-            "fname": "Testi1",
-            "lname": "Käyttäjä1",
-            "email": "test1@example.com",
+            "fname": "Testi01",
+            "lname": "Käyttäjä01",
+            "email": "test01@example.com",
             "password": "string",
         },
     )
@@ -23,18 +23,18 @@ def test_register_user_with_existing_email():
     client.post(
         "/register",
         json={  # ensimmäinen rekisteröinti
-            "fname": "Testi2",
-            "lname": "Käyttäjä2",
-            "email": "test2@example.com",
+            "fname": "Testi02",
+            "lname": "Käyttäjä02",
+            "email": "test02@example.com",
             "password": "string",
         },
     )
     response = client.post(
         "/register",
         json={  # toinen rekisteröinti samalla sähköpostilla
-            "fname": "Testi2",
-            "lname": "Käyttäjä2",
-            "email": "test2@example.com",
+            "fname": "Testi02",
+            "lname": "Käyttäjä02",
+            "email": "test02@example.com",
             "password": "string",
         },
     )
@@ -95,3 +95,14 @@ def test_chatbot_response():
     )
     assert response.status_code == 200
     assert "response" in response.json()
+
+# Chatbot ei osaa vastata
+def test_chatbot_unknown_input():
+    response = client.post(
+        "/chat",
+        json={
+            "message": "blablagibberish",
+        },
+    )
+    assert response.status_code == 200
+    assert "contact request" in response.json()["response"]

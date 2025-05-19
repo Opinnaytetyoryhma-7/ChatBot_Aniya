@@ -18,12 +18,6 @@ import AdminPage from "./pages/AdminPage"
 function App() {
   const [message, setMessage] = useState('');
   
-  useEffect(() => {
-    fetch('http://localhost:8000/api/hello')
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(error => console.error('Error fetching:', error));
-  }, []);
 
   return (
     <CartProvider>
@@ -46,8 +40,6 @@ function App() {
           
           <Footer />
         </Router>
-        
-        <h1>{message}</h1> 
       </div>
     </CartProvider>
   );

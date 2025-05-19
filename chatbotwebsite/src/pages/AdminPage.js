@@ -8,7 +8,6 @@ function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [activeTicket, setActiveTicket] = useState(null);
   const [responseText, setResponseText] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTickets = async () => {

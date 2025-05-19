@@ -303,7 +303,6 @@ async def update_ticket(
     current_user: dict = Depends(require_admin_user)
 ):
     try:
-        # Update ticket in database
         updated_ticket = (
             supabase.table("tickets")
             .update({
@@ -315,7 +314,6 @@ async def update_ticket(
             .execute()
         ).data[0]
         
-        # If closing ticket, send email (implement send_email function)
         if update.status == "closed" and update.admin_response:
             send_email(
                 to_email=updated_ticket["user_email"],

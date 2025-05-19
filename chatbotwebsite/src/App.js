@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import { CartProvider } from './Help/CartContext';
 import CartPage from './pages/CartPage';
 import ReviewPage from "./pages/ReviewPage";
+import AdminPage from "./pages/AdminPage"
 
 function App() {
   const [message, setMessage] = useState('');
@@ -40,6 +41,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/review" element={<ReviewPage />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
           
           <Footer />

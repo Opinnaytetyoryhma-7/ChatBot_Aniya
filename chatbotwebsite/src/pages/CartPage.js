@@ -18,14 +18,14 @@ function CartPage() {
         body: JSON.stringify(
           cartItems.map(item => ({
             name: item.name,
-            quantity: item.quantity || 1,  // default to 1 if quantity isn't tracked yet
+            quantity: item.quantity || 1, 
           }))
         ),
       });
 
       if (response.ok) {
         alert("Purchase successful!");
-        clearCart(); // Clear the cart after successful purchase
+        clearCart(); 
       } else {
         const data = await response.json();
         alert("Purchase failed: " + data.detail);

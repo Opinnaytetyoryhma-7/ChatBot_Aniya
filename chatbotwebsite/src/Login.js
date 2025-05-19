@@ -3,23 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './styles/Login.css';
 
 function Login() {
-    
-    //Heres a example way to create a user account needs to be improved.
-    fetch('http://localhost:8000/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: 'user@example.com',
-          password: 'userpassword',
-          fname: 'John',
-          lname: 'Doe',
-        }),
-      })
-        .then(response => response.json())
-        .then(data => console.log('User registered:', data))
-        .catch(error => console.error('Error registering user:', error));
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -30,7 +13,7 @@ function Login() {
 
     const validateForm = () => {
         if (!username || !password) {
-            setError('Username and password are Required');
+            setError('Username and password are required');
             return false;
         }
         setError('');
@@ -55,22 +38,29 @@ function Login() {
                 body: formDetails,
             });
 
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('access_token', data.access_token);
+                
+                try {
+                    const tokenData = JSON.parse(atob(data.access_token.split('.')[1]));
+                    if (tokenData.admin) {
+                        navigate('/admin');  // Suoraan admin sivulle jos admin token
+                    } else {
+                        navigate('/');  // Homepagelle navigointi jos on normi käyttäjä
+                    }
+                } catch {
+                    navigate('/');  // Jos token epäonnistuu
+                }
+            } else {
+                const errorData = await response.json();
+                setError(errorData.detail || 'Authentication failed!');
+            }
+        } catch (error) {
+            setError('An error occurred. Please try again later.');
+        } finally {
             setLoading(false);
-        
-
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('token', data.access_token);
-            navigate('/protected');
-        } else {
-            const errorData = await response.json();
-            setError(errorData.detail || 'Authentication failed!');
         }
-    } catch (error) {
-        setLoading(false);
-        setError('An error occurred. Please try again later.');
-    }
-
     };
     
     return (
@@ -79,12 +69,13 @@ function Login() {
             <h2 className="login-title">Login</h2>
     
             <div className="login-field">
-              <label>Username:</label>
+              <label>Username (Email):</label>
               <input
-                type="text"
+                type="email"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="login-input"
+                required
               />
             </div>
     
@@ -95,10 +86,10 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="login-input"
+                required
               />
             </div>
-            <p>Don't have an account? <a href="/register">Register here</a>
-            </p>
+            <p>Don't have an account? <a href="/register">Register here</a></p>
     
             <button type="submit" disabled={loading} className="login-button">
               {loading ? 'Logging in...' : 'Login'}
@@ -107,8 +98,7 @@ function Login() {
             {error && <p className="login-error">{error}</p>}
           </form>
         </div>
-      );
-    }
+    );
+}
+
 export default Login;
-
-

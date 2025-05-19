@@ -1,7 +1,9 @@
+import datetime
 from fastapi import FastAPI, HTTPException, Depends, status, Query
 from typing import Optional, List
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
+import supabase
 from chat import get_response, intents, recommend_product
 from backend.database import (
     save_unknown_message,
@@ -20,6 +22,7 @@ from backend.auth import (
     create_access_token,
     get_current_user,
     require_admin_user,
+    send_email,
 )
 
 app = FastAPI()
@@ -38,6 +41,10 @@ app.add_middleware(
     allow_headers=["*"],  # sallii kaikki headerit
 )
 
+#Ticketin updatee frontendissä
+class TicketUpdate(BaseModel):
+    status: str
+    admin_response: Optional[str] = None
 
 # Määritellään ChatInput-malli, joka määrittelee POST-pyynnössä vastaanotetun datan rakenteen
 class ChatInput(BaseModel):
@@ -286,5 +293,36 @@ async def submit_feedback(feedback: FeedbackInput):
             contact_form=feedback.contact_form_feedback,
         )
         return {"message": "Feedback submitted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/admin/tickets/{ticket_id}", response_model=TicketOutput)
+async def update_ticket(
+    ticket_id: int,
+    update: TicketUpdate,
+    current_user: dict = Depends(require_admin_user)
+):
+    try:
+        # Update ticket in database
+        updated_ticket = (
+            supabase.table("tickets")
+            .update({
+                "status": update.status,
+                "admin_response": update.admin_response,
+                "updated_at": datetime.now().isoformat()
+            })
+            .eq("ticket_id", ticket_id)
+            .execute()
+        ).data[0]
+        
+        # If closing ticket, send email (implement send_email function)
+        if update.status == "closed" and update.admin_response:
+            send_email(
+                to_email=updated_ticket["user_email"],
+                subject=f"Ticket #{ticket_id} Response",
+                body=update.admin_response
+            )
+            
+        return updated_ticket
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

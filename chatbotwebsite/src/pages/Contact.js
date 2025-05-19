@@ -34,7 +34,7 @@ function Contact() {
 
       const data = await response.json()
       alert(data.response || "Message sent successfully!")
-      setFormData({ name: '', email: '', product: '', message: '' })  // Clear form
+      setFormData({ name: '', email: '', product: '', message: '' })  
 
     } catch (err) {
       alert("Failed to send message. Try again later.")

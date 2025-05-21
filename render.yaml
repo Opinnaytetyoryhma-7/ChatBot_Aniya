@@ -10,7 +10,8 @@ services:
       - key: SUPABASE_KEY
         value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwcXJucHdkZHRscnJ1d2F0am5wIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0Mzk4OTc2MCwiZXhwIjoyMDU5NTY1NzYwfQ.QW8sAIRaot4CR-Xfh2EXk2xCH6qM1H0fnmcvi_hfxEg
 
-  - type: static
+  - type: web
     name: frontend
+    env: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/build

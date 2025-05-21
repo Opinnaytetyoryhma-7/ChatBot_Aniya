@@ -1,8 +1,16 @@
+import os
+import random
 import datetime
-from fastapi import FastAPI, HTTPException, Depends, status, Query
 from typing import Optional, List
+from fastapi import FastAPI, HTTPException, Depends, status, Query
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
 from pydantic import BaseModel, EmailStr
+
+# Chatbot & backend functions
 import supabase
 from chat import get_response, intents, recommend_product
 from backend.database import (
@@ -15,8 +23,6 @@ from backend.database import (
     get_tickets,
     create_review,
 )
-from fastapi.middleware.cors import CORSMiddleware
-import random
 from backend.auth import (
     hash_password,
     verify_password,
@@ -29,17 +35,27 @@ from backend.auth import (
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# cors
+# Serve frontend static files (React build)
+app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
+
+@app.get("/")
+def serve_root():
+    return FileResponse("frontend/build/index.html")
+
+
+
+
+# CORS settings
 origins = [
-    "http://localhost:3000",  # React-frontend, muuta tarvittaessa
+    "http://localhost:3000",  # Add deployed frontend URL here if needed
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # sallii vain määritellyt osoitteet
-    allow_credentials=True,  # esim. JWT-tokenit
-    allow_methods=["*"],  # sallii kaikki HTTP-metodit
-    allow_headers=["*"],  # sallii kaikki headerit
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 #Ticketin updatee frontendissä
@@ -339,3 +355,13 @@ async def update_ticket(
         return updated_ticket
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/{full_path:path}")
+def serve_react_app(full_path: str):
+    """
+    This ensures React routing works (e.g., /about, /dashboard routes)
+    """
+    file_path = f"frontend/build/{full_path}"
+    if os.path.exists(file_path) and not os.path.isdir(file_path):
+        return FileResponse(file_path)
+    return FileResponse("frontend/build/index.html")

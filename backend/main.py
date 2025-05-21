@@ -35,19 +35,19 @@ from backend.auth import (
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Serve frontend static files (React build)
-app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
+# Get frontend URL from environment variable with localhost as fallback
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 
 @app.get("/")
-def serve_root():
-    return FileResponse("frontend/build/index.html")
-
-
-
+def read_root():
+    return {"message": "Welcome to the FastAPI backend"}
 
 # CORS settings
 origins = [
-    "http://localhost:3000",  # Add deployed frontend URL here if needed
+    FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "https://*.railway.app"
 ]
 
 app.add_middleware(
@@ -365,3 +365,8 @@ def serve_react_app(full_path: str):
     if os.path.exists(file_path) and not os.path.isdir(file_path):
         return FileResponse(file_path)
     return FileResponse("frontend/build/index.html")
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

@@ -58,7 +58,6 @@ function Register() {
             className="login-input"
           />
         </div>
-
         <div className="login-field">
           <label>Last Name:</label>
           <input
@@ -69,7 +68,6 @@ function Register() {
             className="login-input"
           />
         </div>
-
         <div className="login-field">
           <label>Email:</label>
           <input
@@ -80,7 +78,6 @@ function Register() {
             className="login-input"
           />
         </div>
-
         <div className="login-field">
           <label>Password:</label>
           <input
@@ -91,11 +88,9 @@ function Register() {
             className="login-input"
           />
         </div>
-
         <button type="submit" disabled={loading} className="login-button">
           {loading ? 'Registering...' : 'Register'}
         </button>
-
         {error && <p className="login-error">{error}</p>}
       </form>
     </div>

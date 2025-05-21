@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../Help/CartContext';
-import '../styles/menuItem.css'; // Ensure to create this CSS file for specific item styles
+import '../styles/menuItem.css'; 
 
 function MenuItem({ image, name, price, availability }) {
   const { addToCart } = useContext(CartContext);

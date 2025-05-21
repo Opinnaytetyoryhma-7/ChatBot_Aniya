@@ -6,6 +6,7 @@ from pydantic import BaseModel, EmailStr
 import supabase
 from chat import get_response, intents, recommend_product
 from backend.database import (
+    reduce_product_availability,
     save_unknown_message,
     create_ticket,
     create_user,
@@ -90,6 +91,20 @@ class FeedbackInput(BaseModel):
     ease_of_use: str
     chatbot_feedback: str
     contact_form_feedback: str
+
+class PurchaseItem(BaseModel):
+    name: str
+    quantity: int
+
+
+@app.post("/purchase")
+async def purchase_cart_items(items: list[PurchaseItem]):
+    try:
+        for item in items:
+            reduce_product_availability(item.name, item.quantity)
+        return {"message": "Purchase completed and inventory updated."}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 # Luodaan post-pyyntö, joka vastaanottaa käyttäjän viestin

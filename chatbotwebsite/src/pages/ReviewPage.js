@@ -42,16 +42,12 @@ function ReviewPage() {
       <form onSubmit={handleSubmit}>
         <label>How is the websites outlook?</label>
         <textarea name="clarity" value={form.clarity} onChange={handleChange} />
-
         <label>Were you able to find what you were looking for in the website?</label>
         <textarea name="ease_of_use" value={form.ease_of_use} onChange={handleChange} />
-
         <label>Did the chatbot give useful answers matching your input?</label>
         <textarea name="chatbot_feedback" value={form.chatbot_feedback} onChange={handleChange} />
-
         <label>Did you manage to send an contact request and was it easy to fill out?</label>
         <textarea name="contact_form_feedback" value={form.contact_form_feedback} onChange={handleChange} />
-
         <button type="submit">Submit</button>
       </form>
       {message && <p>{message}</p>}

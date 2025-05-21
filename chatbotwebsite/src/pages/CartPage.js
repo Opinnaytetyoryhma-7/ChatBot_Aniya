@@ -55,7 +55,6 @@ function CartPage() {
           ))
         )}
       </div>
-
       {cartItems.length > 0 && (
         <button className="checkoutButton" onClick={handleCheckout}>
           Checkout

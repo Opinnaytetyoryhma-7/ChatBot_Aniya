@@ -8,7 +8,6 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
     const navigate = useNavigate();
 
     const validateForm = () => {
@@ -41,7 +40,6 @@ function Login() {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('access_token', data.access_token);
-                
                 try {
                     const tokenData = JSON.parse(atob(data.access_token.split('.')[1]));
                     if (tokenData.admin) {
@@ -67,7 +65,6 @@ function Login() {
         <div className="login-container">
           <form onSubmit={handleSubmit} className="login-form">
             <h2 className="login-title">Login</h2>
-    
             <div className="login-field">
               <label>Username (Email):</label>
               <input
@@ -78,7 +75,6 @@ function Login() {
                 required
               />
             </div>
-    
             <div className="login-field">
               <label>Password:</label>
               <input
@@ -90,11 +86,9 @@ function Login() {
               />
             </div>
             <p>Don't have an account? <a href="/register">Register here</a></p>
-    
             <button type="submit" disabled={loading} className="login-button">
               {loading ? 'Logging in...' : 'Login'}
             </button>
-    
             {error && <p className="login-error">{error}</p>}
           </form>
         </div>

@@ -6,7 +6,7 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
   const addToCart = (product) => {
-  console.log('Adding to cart:', product);  // Check the product being added
+  console.log('Adding to cart:', product); 
   setCartItems(prev => {
     const existing = prev.find(item => item.name === product.name);
     if (existing) {
@@ -25,8 +25,7 @@ export const CartProvider = ({ children }) => {
       prevItems.filter(item => item.name !== itemToRemove.name)
     );
   };
-
-  // Clear cart
+  
   const clearCart = () => {
     setCartItems([]);
   };

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/AdminPage.css'
 
 function AdminPage() {
@@ -14,9 +13,7 @@ function AdminPage() {
       try {
         const token = localStorage.getItem('access_token');
         const response = await fetch('http://localhost:8000/admin/tickets', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
+          headers: {'Authorization': `Bearer ${token}`,}
         });
         
         if (!response.ok) throw new Error("Failed to fetch tickets");
@@ -38,7 +35,6 @@ function AdminPage() {
 
   const handleSubmitResponse = async () => {
     if (!activeTicket || !responseText.trim()) return;
-    
     try {
       const token = localStorage.getItem('access_token');
       const response = await fetch(
@@ -77,7 +73,6 @@ function AdminPage() {
   return (
     <div className="admin-container">
       <h1>Admin Ticket Management</h1>
-      
       {activeTicket && (
         <div className="ticket-response-modal">
           <h3>Respond to Ticket #{activeTicket.ticket_id}</h3>

@@ -35,8 +35,6 @@ from auth import (
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Serve frontend static files (React build)
-app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
 
 @app.get("/")
 def home():
@@ -47,7 +45,8 @@ def home():
 
 # CORS settings
 origins = [
-    "https://ot-7frontend.onrender.com",  # Add deployed frontend URL here if needed
+    "https://ot-7frontend.onrender.com",
+    "http://localhost:3000"  # For local testing
 ]
 
 app.add_middleware(
@@ -56,6 +55,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 #Ticketin updatee frontendissä
@@ -356,12 +356,3 @@ async def update_ticket(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.get("/{full_path:path}")
-def serve_react_app(full_path: str):
-    """
-    This ensures React routing works (e.g., /about, /dashboard routes)
-    """
-    file_path = f"frontend/build/{full_path}"
-    if os.path.exists(file_path) and not os.path.isdir(file_path):
-        return FileResponse(file_path)
-    return FileResponse("frontend/build/index.html")

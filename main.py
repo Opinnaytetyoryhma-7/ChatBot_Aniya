@@ -39,8 +39,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
 
 @app.get("/")
-def serve_root():
-    return FileResponse("frontend/build/index.html")
+def home():
+    return {"message": "Backend running!"}
 
 
 

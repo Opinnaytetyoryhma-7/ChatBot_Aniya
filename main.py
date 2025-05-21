@@ -47,7 +47,7 @@ def home():
 
 # CORS settings
 origins = [
-    "http://localhost:3000",  # Add deployed frontend URL here if needed
+    "https://ot-7frontend.onrender.com",  # Add deployed frontend URL here if needed
 ]
 
 app.add_middleware(

@@ -13,7 +13,7 @@ from pydantic import BaseModel, EmailStr
 # Chatbot & backend functions
 import supabase
 from chat import get_response, intents, recommend_product
-from backend.database import (
+from database import (
     reduce_product_availability,
     save_unknown_message,
     create_ticket,
@@ -23,7 +23,7 @@ from backend.database import (
     get_tickets,
     create_review,
 )
-from backend.auth import (
+from auth import (
     hash_password,
     verify_password,
     create_access_token,

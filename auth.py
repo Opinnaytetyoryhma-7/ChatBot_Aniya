@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 from decouple import config
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from backend.database import get_user_by_id
+from database import get_user_by_id
 import smtplib
 from email.mime.text import MIMEText
 from decouple import config

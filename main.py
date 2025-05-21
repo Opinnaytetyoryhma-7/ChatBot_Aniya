@@ -1,4 +1,3 @@
-import os
 import random
 import datetime
 from typing import Optional, List
@@ -7,6 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+import os
+import uvicorn
 
 from pydantic import BaseModel, EmailStr
 
@@ -42,7 +43,6 @@ def home():
 
 
 
-
 # CORS settings
 origins = [
     "https://ot-7frontend.onrender.com",
@@ -57,6 +57,10 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"]
 )
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))  # Use PORT from Render env, or default to 10000
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
 
 #Ticketin updatee frontendissä
 class TicketUpdate(BaseModel):

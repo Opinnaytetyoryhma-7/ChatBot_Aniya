@@ -1,12 +1,16 @@
 services:
   - type: web
-    name: chatbot-aniya
+    name: backend
     env: python
-    buildCommand: |
-      cd frontend && npm install && npm run build && cd ..
-    startCommand: uvicorn backend.main:app --host=0.0.0.0 --port=10000
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port 10000
     envVars:
       - key: SUPABASE_URL
-        value: your_supabase_url
+        value: https://qpqrnpwddtlrruwatjnp.supabase.co
       - key: SUPABASE_KEY
-        value: your_supabase_key
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwcXJucHdkZHRscnJ1d2F0am5wIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0Mzk4OTc2MCwiZXhwIjoyMDU5NTY1NzYwfQ.QW8sAIRaot4CR-Xfh2EXk2xCH6qM1H0fnmcvi_hfxEg
+
+  - type: static
+    name: frontend
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/build

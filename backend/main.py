@@ -1,8 +1,3 @@
-from fastapi import FastAPI, HTTPException, Depends, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel, EmailStr
-from chat import get_response, intents
-from backend.database import (
 import os
 import random
 import datetime
@@ -25,9 +20,6 @@ from backend.database import (
     create_user,
     get_user_by_email,
     get_products,
-)
-from fastapi.middleware.cors import CORSMiddleware
-import random
     get_tickets,
     create_review,
 )
@@ -43,9 +35,6 @@ from backend.auth import (
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# cors
-origins = [
-    "http://localhost:3000",  # React-frontend, muuta tarvittaessa
 # Serve frontend static files (React build)
 app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
 
@@ -63,12 +52,6 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # sallii vain määritellyt osoitteet
-    allow_credentials=True,  # esim. JWT-tokenit
-    allow_methods=["*"],  # sallii kaikki HTTP-metodit
-    allow_headers=["*"],  # sallii kaikki headerit
-)
-
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
@@ -148,12 +131,6 @@ async def chat(input: ChatInput):
     if prob > 0.75:
         for intent in intents["intents"]:
             if tag == intent["tag"]:
-                response = random.choice(intent["responses"])
-
-                return {"response": response}
-
-    # Jos botti ei tunnista viestiä, tallennetaan se Supabasen Message-tauluun
-    save_unknown_message(input.message)
                 if tag == "recommend_product":
                     products = recommend_product(input.message)
                     if products:
@@ -194,9 +171,6 @@ async def chat(input: ChatInput):
     msg = input.message.strip().lower()
 
     match state:
-        case None:
-            return {
-                "response": "Pahoittelut, nyt en ymmärtänyt. Haluatko jättää tukipyynnön?",
         case None | "":
             # Jos botti ei tunnista viestiä, tallennetaan se Supabasen Message-tauluun
             save_unknown_message(input.message)
@@ -206,9 +180,6 @@ async def chat(input: ChatInput):
             }
 
         case "ask_ticket":
-            if msg in ["kyllä", "joo", "haluan", "ok", "juu"]:
-                return {
-                    "response": "Voisitko kuvailla ongelmasi ja jättää yhteystietosi, kiitos!",
             if msg in ["yes", "yeah", "yup", "ok"]:
                 return {
                     "response": "Could you describe your problem and leave your email, thank you!",
@@ -216,22 +187,17 @@ async def chat(input: ChatInput):
                 }
             else:
                 return {
-                    "response": "Selvä juttu! Hyvää päivänjatkoa!",
                     "response": "Got it :) have a nice day!",
                     "conversation_state": "end",
                 }
 
         case "wait_description":
             return {
-                "response": "Kiitos! Lisää vielä sähköpostiosoitteesi, niin voimme ottaa sinuun yhteyttä",
                 "response": "Thank you! Please also leave your email address so we can contact you",
                 "conversation_state": "wait_email",
                 "issue_description": input.message,  # tallennetaan esim. React useStateen, lähetetään /ticket-pyynnössä
             }
 
-        case _:
-            return {
-                "response": "Jokin meni pieleen. Yritetäänpä uudelleen.",
         case "wait_email":
             issue_description = input.issue_description
             email = input.message.strip().lower()
@@ -270,7 +236,6 @@ async def ticket(input: TicketInput):
     create_ticket(input.issue_description, input.email)
 
     return {
-        "response": "Kiitos! Olemme tallentaneet tietosi. Palaamme asiaan heti kun pystymme!"
         "response": "Thank you! We have saved your information and we'll contact you as soon as possible!",
     }
 
@@ -280,7 +245,6 @@ async def register_user(user: RegisterInput):
     existing_user = get_user_by_email(user.email)
     if existing_user.data:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Käyttäjä on jo olemassa"
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
 
@@ -305,14 +269,12 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     if not res.data:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Käyttäjätunnus tai salasana virheellinen",
             detail="Email or password is incorrect",
         )
     user = res.data[0]
     if not verify_password(form_data.password, user["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Käyttäjätunnus tai salasana virheellinen",
             detail="Email or password is incorrect",
         )
 

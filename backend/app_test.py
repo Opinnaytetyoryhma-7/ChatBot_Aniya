@@ -76,4 +76,4 @@ if prompt := st.chat_input("Kirjoita viestisi tähän..."):
 
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
-
+    # streamlit run backend/app_test.py

@@ -13,3 +13,12 @@ USER: heippa | INTENT: unknown
 [2025-05-11 23:10:30] USER: suosittele konetta | INTENT: unknown
 [2025-05-11 23:10:54] USER:  | INTENT: unknown
 [2025-05-11 23:42:21] USER:  | INTENT: unknown
+[2025-05-13 00:02:10] USER: can you recommend a cheap laptop | INTENT: unknown
+[2025-05-13 18:47:47] USER: who are you | INTENT: unknown
+[2025-05-13 19:09:47] USER: request | INTENT: unknown
+[2025-05-13 20:27:02] USER: rjaqtykj | INTENT: unknown
+[2025-05-13 21:00:00] USER: i have an ugly pc | INTENT: unknown
+[2025-05-13 21:08:23] USER: nice to meet you | INTENT: unknown
+[2025-05-13 21:17:17] USER: my pc isn't working | INTENT: unknown
+[2025-05-14 00:03:20] USER: efgwhoh | INTENT: unknown
+[2025-05-14 00:03:39] USER: THJARJ | INTENT: unknown

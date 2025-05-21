@@ -34,3 +34,26 @@ def get_user_by_id(user_id: str):
 
 def get_products():
     return supabase.table("Product").select("*").execute()
+
+def get_tickets():
+    return supabase.table("Ticket").select("*")
+
+def create_review(clarity: str, ease_of_use: str, chatbot: str, contact_form: str):
+    data = {
+        "clarity": clarity,
+        "ease_of_use": ease_of_use,
+        "chatbot": chatbot,
+        "contact_form": contact_form,
+    }
+    print("Creating review with data:", data)
+    return supabase.table("Review").insert(data).execute()
+
+def reduce_product_availability(product_name: str, quantity: int):
+    product = supabase.table("Product").select("*").eq("name", product_name).single().execute()
+    if not product.data:
+        raise Exception(f"Product '{product_name}' not found.")
+
+    current_availability = product.data["availability"]
+    new_availability = max(current_availability - quantity, 0)
+
+    return supabase.table("Product").update({"availability": new_availability}).eq("name", product_name).execute()

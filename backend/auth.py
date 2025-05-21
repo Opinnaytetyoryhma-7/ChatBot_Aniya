@@ -5,6 +5,9 @@ from decouple import config
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from backend.database import get_user_by_id
+import smtplib
+from email.mime.text import MIMEText
+from decouple import config
 
 SECRET_KEY = config("SECRET_KEY")
 ALGORITHM = config("ALGORITHM")
@@ -26,6 +29,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     expire = datetime.now() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
+    user = get_user_by_id(data["sub"]).data[0]
+    to_encode.update({"admin": user.get("admin", False)})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
@@ -47,3 +52,21 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     user = user_res.data[0]
     return user
+
+def require_admin_user(current_user: dict = Depends(get_current_user)):
+    if current_user.get("admin") != True:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Ei oikeuksia",
+        )
+    return current_user
+
+def send_email(to_email: str, subject: str, body: str):
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = config('SMTP_FROM_EMAIL')
+    msg['To'] = to_email
+    
+    with smtplib.SMTP(config('SMTP_SERVER'), config('SMTP_PORT')) as server:
+        server.login(config('SMTP_USERNAME'), config('SMTP_PASSWORD'))
+        server.send_message(msg)

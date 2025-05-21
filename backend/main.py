@@ -3,6 +3,23 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 from chat import get_response, intents
 from backend.database import (
+import os
+import random
+import datetime
+from typing import Optional, List
+from fastapi import FastAPI, HTTPException, Depends, status, Query
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from pydantic import BaseModel, EmailStr
+
+# Chatbot & backend functions
+import supabase
+from chat import get_response, intents, recommend_product
+from backend.database import (
+    reduce_product_availability,
     save_unknown_message,
     create_ticket,
     create_user,
@@ -11,11 +28,16 @@ from backend.database import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 import random
+    get_tickets,
+    create_review,
+)
 from backend.auth import (
     hash_password,
     verify_password,
     create_access_token,
     get_current_user,
+    require_admin_user,
+    send_email,
 )
 
 app = FastAPI()
@@ -24,6 +46,19 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # cors
 origins = [
     "http://localhost:3000",  # React-frontend, muuta tarvittaessa
+# Serve frontend static files (React build)
+app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
+
+@app.get("/")
+def serve_root():
+    return FileResponse("frontend/build/index.html")
+
+
+
+
+# CORS settings
+origins = [
+    "http://localhost:3000",  # Add deployed frontend URL here if needed
 ]
 
 app.add_middleware(
@@ -34,16 +69,38 @@ app.add_middleware(
     allow_headers=["*"],  # sallii kaikki headerit
 )
 
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+#Ticketin updatee frontendissä
+class TicketUpdate(BaseModel):
+    status: str
+    admin_response: Optional[str] = None
 
 # Määritellään ChatInput-malli, joka määrittelee POST-pyynnössä vastaanotetun datan rakenteen
 class ChatInput(BaseModel):
     message: str  # käyttäjän lähettämä viesti
     conversation_state: str | None = None  # keskustelun tila, oletuksena None
+    issue_description: str | None = None  # ongelman kuvaus, oletuksena None
+
 
 
 class TicketInput(BaseModel):
     issue_description: str  # ongelman kuvaus
     email: EmailStr  # käytetään pydanticin EmailStr-tyyppiä sähköpostiosoitteen kelpoisuuden tarkistamiseen
+    user_id: Optional[str] = None  # käyttäjätunnus, oletuksena None
+
+
+class TicketOutput(BaseModel):
+    ticket_id: int
+    user_id: Optional[str]
+    issue_description: str
+    status: str
+    user_email: EmailStr
+    created_at: str
 
 
 class RegisterInput(BaseModel):
@@ -62,6 +119,26 @@ class UserOut(BaseModel):  # vältetäään palauttamasta salasanaa frontendille
     id: str
     email: EmailStr
 
+class FeedbackInput(BaseModel):
+    clarity: str
+    ease_of_use: str
+    chatbot_feedback: str
+    contact_form_feedback: str
+
+class PurchaseItem(BaseModel):
+    name: str
+    quantity: int
+
+
+@app.post("/purchase")
+async def purchase_cart_items(items: list[PurchaseItem]):
+    try:
+        for item in items:
+            reduce_product_availability(item.name, item.quantity)
+        return {"message": "Purchase completed and inventory updated."}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 
 # Luodaan post-pyyntö, joka vastaanottaa käyttäjän viestin
 @app.post("/chat")
@@ -77,6 +154,41 @@ async def chat(input: ChatInput):
 
     # Jos botti ei tunnista viestiä, tallennetaan se Supabasen Message-tauluun
     save_unknown_message(input.message)
+                if tag == "recommend_product":
+                    products = recommend_product(input.message)
+                    if products:
+                        response_text = "Here are the best matches: \n" + "\n".join(
+                            f"- {product['name']} ({product['price']}€)"
+                            for product in products
+                        )
+                    else:
+                        response_text = (
+                            "I couldn't find any matching products based on your description."
+                        )
+
+                    return {"response": response_text}
+
+                if tag == "recommend":
+                    return {
+                        "response": random.choice(intent["responses"]),
+                        "conversation_state": "wait_recommendation",
+                    }
+                if tag == "ticket_asking":
+                    return {
+                        "response": "Could you describe your problem and leave your email, thank you!",
+                        "conversation_state": "wait_description",
+                    }
+
+                if tag == "goodbye":
+                    return {
+                        "response": random.choice(intent["responses"]),
+                        "conversation_state": "end",
+                    }
+                response = random.choice(intent["responses"])
+
+                return { "response": response}
+
+
 
     state = input.conversation_state  # kertoo missä kohtaa keskustelu on menossa
     msg = input.message.strip().lower()
@@ -85,6 +197,11 @@ async def chat(input: ChatInput):
         case None:
             return {
                 "response": "Pahoittelut, nyt en ymmärtänyt. Haluatko jättää tukipyynnön?",
+        case None | "":
+            # Jos botti ei tunnista viestiä, tallennetaan se Supabasen Message-tauluun
+            save_unknown_message(input.message)
+            return {
+                "response": "I'm sorry, I don't understand what you mean. Would you like to leave a contact request?",
                 "conversation_state": "ask_ticket",
             }
 
@@ -92,17 +209,22 @@ async def chat(input: ChatInput):
             if msg in ["kyllä", "joo", "haluan", "ok", "juu"]:
                 return {
                     "response": "Voisitko kuvailla ongelmasi ja jättää yhteystietosi, kiitos!",
+            if msg in ["yes", "yeah", "yup", "ok"]:
+                return {
+                    "response": "Could you describe your problem and leave your email, thank you!",
                     "conversation_state": "wait_description",
                 }
             else:
                 return {
                     "response": "Selvä juttu! Hyvää päivänjatkoa!",
+                    "response": "Got it :) have a nice day!",
                     "conversation_state": "end",
                 }
 
         case "wait_description":
             return {
                 "response": "Kiitos! Lisää vielä sähköpostiosoitteesi, niin voimme ottaa sinuun yhteyttä",
+                "response": "Thank you! Please also leave your email address so we can contact you",
                 "conversation_state": "wait_email",
                 "issue_description": input.message,  # tallennetaan esim. React useStateen, lähetetään /ticket-pyynnössä
             }
@@ -110,6 +232,34 @@ async def chat(input: ChatInput):
         case _:
             return {
                 "response": "Jokin meni pieleen. Yritetäänpä uudelleen.",
+        case "wait_email":
+            issue_description = input.issue_description
+            email = input.message.strip().lower()
+
+            result = await ticket(TicketInput(
+                issue_description=issue_description, email=email
+            ))
+            return result
+
+        case "wait_recommendation":
+            products = recommend_product(input.message)
+            if products:
+                response_text = "Here are a few recommendations for you: \n" + "\n".join(
+                    f"- {product['name']} ({product['price']}€)" for product in products
+                )
+            else:
+                response_text = (
+                    "Unfortunately I couldn't find any matching products based on your description."
+                )
+
+            return {
+                "response": response_text,
+                "conversation_state": None,
+            }
+
+        case _:
+            return {
+                "response": "Something went wrong. Please try again.",
                 "conversation_state": None,
             }
 
@@ -121,6 +271,7 @@ async def ticket(input: TicketInput):
 
     return {
         "response": "Kiitos! Olemme tallentaneet tietosi. Palaamme asiaan heti kun pystymme!"
+        "response": "Thank you! We have saved your information and we'll contact you as soon as possible!",
     }
 
 
@@ -130,6 +281,7 @@ async def register_user(user: RegisterInput):
     if existing_user.data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Käyttäjä on jo olemassa"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
 
     hashed_pw = hash_password(user.password)
@@ -154,12 +306,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Käyttäjätunnus tai salasana virheellinen",
+            detail="Email or password is incorrect",
         )
     user = res.data[0]
     if not verify_password(form_data.password, user["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Käyttäjätunnus tai salasana virheellinen",
+            detail="Email or password is incorrect",
         )
 
     token = create_access_token({"sub": str(user["user_id"])})
@@ -178,3 +332,74 @@ async def read_users_me(current_user=Depends(get_current_user)):
 async def get_products_list():
     products = get_products()
     return products.data
+
+@app.get("/admin/tickets", response_model=List[TicketOutput])
+async def get_tickets_list(
+    status: Optional[str] = Query(None, description="Filter tickets by status"),
+    current_user: dict = Depends(require_admin_user),
+):
+    try:
+        tickets = get_tickets()
+        if status:
+            tickets = tickets.eq("status", status)
+
+        tickets = tickets.order("created_at", desc=True)
+
+        response = tickets.execute()
+
+        return response.data
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/review")
+async def submit_feedback(feedback: FeedbackInput):
+    try:
+        create_review(
+            clarity=feedback.clarity,
+            ease_of_use=feedback.ease_of_use,
+            chatbot=feedback.chatbot_feedback,
+            contact_form=feedback.contact_form_feedback,
+        )
+        return {"message": "Feedback submitted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/admin/tickets/{ticket_id}", response_model=TicketOutput)
+async def update_ticket(
+    ticket_id: int,
+    update: TicketUpdate,
+    current_user: dict = Depends(require_admin_user)
+):
+    try:
+        updated_ticket = (
+            supabase.table("tickets")
+            .update({
+                "status": update.status,
+                "admin_response": update.admin_response,
+                "updated_at": datetime.now().isoformat()
+            })
+            .eq("ticket_id", ticket_id)
+            .execute()
+        ).data[0]
+        
+        if update.status == "closed" and update.admin_response:
+            send_email(
+                to_email=updated_ticket["user_email"],
+                subject=f"Ticket #{ticket_id} Response",
+                body=update.admin_response
+            )
+            
+        return updated_ticket
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/{full_path:path}")
+def serve_react_app(full_path: str):
+    """
+    This ensures React routing works (e.g., /about, /dashboard routes)
+    """
+    file_path = f"frontend/build/{full_path}"
+    if os.path.exists(file_path) and not os.path.isdir(file_path):
+        return FileResponse(file_path)
+    return FileResponse("frontend/build/index.html")

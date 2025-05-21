@@ -1,4 +1,5 @@
-
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.7.0+cpu
 fastapi==0.115.12
 uvicorn==0.34.2
 supabase==2.15.1
@@ -8,4 +9,3 @@ python-decouple==3.8
 python-dotenv==1.1.0
 requests==2.32.3
 python-jose==3.4.0
-torch==2.7.0

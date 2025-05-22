@@ -1,6 +1,3 @@
-#nltk is used for tokenization
-#numpy helps with numerical operations
-#SnowballStemmer is a stemming algorithm that reduces words to their root form (works for finnish)
 import nltk
 import stanza
 import numpy as np
@@ -11,27 +8,20 @@ try:
 except LookupError:
     nltk.download('punkt')
 
+# Initialize the stanza pipeline for Finnish
 nlp = stanza.Pipeline('fi', processors='tokenize')
-stemmer=SnowballStemmer("english")
 
-#Splits a sentence into words/tokens
+stemmer = SnowballStemmer("english")
+
+# Replace nltk.word_tokenize with stanza tokenization
 def tokenize(sentence):
-    return nltk.word_tokenize(sentence)
+    doc = nlp(sentence)
+    return [word.text for sent in doc.sentences for word in sent.words]
 
-#Reduces a word to root form and converts to lowercase
 def stem(word):
     return stemmer.stem(word.lower())
 
-#Converts a tokenized sentence into a numerical vector
-#1. Stems each word in sentence
-#2. Creates a zero vector
-#3. Sets 1 where words match all_words
 def bag_of_words(tokenized_sentence, all_words):
-    """
-    sentence = ["hello", "how", "are", "you]
-    words = ["hi", "hello", "I", "you", "bye", "thank", "cool"]
-    bog = [   0,      1,     0,    1,     0,      0,       0  ]
-    """
     tokenized_sentence = [stem(w) for w in tokenized_sentence]
 
     bag = np.zeros(len(all_words), dtype=np.float32)

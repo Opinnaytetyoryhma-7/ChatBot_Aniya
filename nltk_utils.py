@@ -6,6 +6,11 @@ import stanza
 import numpy as np
 from nltk.stem.snowball import SnowballStemmer
 
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
 nlp = stanza.Pipeline('fi', processors='tokenize')
 stemmer=SnowballStemmer("english")
 
